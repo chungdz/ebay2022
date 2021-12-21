@@ -2,3 +2,4 @@
 *\.json
 *\.tsv
 /\.ipynb_checkpoints/
+*/data/
