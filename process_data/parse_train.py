@@ -117,6 +117,8 @@ parsed['cross_state'] = dis_attr[3]
 parsed['acc_hour'] = fattr[1]
 parsed['target'] = fattr[0]
 
+print('Before trimming:', parsed.shape)
 parsed = parsed[parsed['target'] >= 0]
+print('After trimming:', parsed.shape)
 parsed.to_csv('data/parsed_train.tsv', index=None, sep='\t')
 
