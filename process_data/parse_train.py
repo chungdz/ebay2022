@@ -3,6 +3,8 @@ from datetime import datetime
 import time
 import json
 from math import radians, cos, sin, asin, sqrt
+from tqdm import tqdm
+tqdm.pandas()
 
 def lldis(lat1, lat2, lon1, lon2):
      
@@ -94,16 +96,18 @@ dict2 = {
     'VERY_LARGE_PACKAGE': 6
 }
 
+print('load data')
 raw = pd.read_csv('data/train.tsv', sep='\t')
 zip_info = json.load(open('data/zipcode_dict.json', 'r'))
 parsed = raw[['record_number', 'shipment_method_id', 'shipping_fee', 
 'carrier_min_estimate', 'carrier_max_estimate', 'category_id', 
 'item_price', 'quantity']]
 
-fattr = raw.apply(add_func, axis=1, result_type='expand')
+print('parsing data')
+fattr = raw.progress_apply(add_func, axis=1, result_type='expand')
 raw['sender_tz'] = fattr[2]
 raw['isdst'] = fattr[3]
-dis_attr = raw.apply(cal_dis, axis=1, result_type='expand')
+dis_attr = raw.progress_apply(cal_dis, axis=1, result_type='expand')
 
 parsed['bt'] = raw['b2c_c2c'].map(dict1)
 parsed['package_size'] = raw['package_size'].map(dict2)
