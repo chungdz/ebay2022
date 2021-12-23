@@ -9,3 +9,5 @@ cd ..
 python -m process_data.collect_zipcode
 python -m process_data.set_zipcode_info
 python -m process_data.parse_train
+python -m process_data.split_train
+python -m process_data.parse_quiz
