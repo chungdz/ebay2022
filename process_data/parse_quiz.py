@@ -30,20 +30,17 @@ def lldis(lat1, lat2, lon1, lon2):
 
 def add_func(row):
     acct = row['acceptance_scan_timestamp']
-    dd = row['delivery_date']
     arr = acct.split()
     cdate = datetime.strptime(arr[0], "%Y-%m-%d")
-    ddate = datetime.strptime(dd, "%Y-%m-%d")
-    delta = ddate - cdate
-    
     acc_hour = int(arr[1][:2])
     tz = int(arr[1][-6:-3])
+    
     if cdate.month >= 3 and cdate.month <= 11:
         isdst = 0
     else:
         isdst = 1
         
-    return delta.days, acc_hour, tz, isdst
+    return acc_hour, tz, isdst
 
 def cal_dis(row):
     sender_tz = row['sender_tz']
@@ -97,7 +94,7 @@ dict2 = {
 }
 
 print('load data')
-raw = pd.read_csv('data/train.tsv', sep='\t')
+raw = pd.read_csv('data/quiz.tsv', sep='\t')
 zip_info = json.load(open('data/zipcode_dict.json', 'r'))
 parsed = raw[['record_number', 'shipment_method_id', 'shipping_fee', 
 'carrier_min_estimate', 'carrier_max_estimate', 'category_id', 
@@ -105,8 +102,8 @@ parsed = raw[['record_number', 'shipment_method_id', 'shipping_fee',
 
 print('parsing data')
 fattr = raw.progress_apply(add_func, axis=1, result_type='expand')
-raw['sender_tz'] = fattr[2]
-raw['isdst'] = fattr[3]
+raw['sender_tz'] = fattr[1]
+raw['isdst'] = fattr[2]
 dis_attr = raw.progress_apply(cal_dis, axis=1, result_type='expand')
 
 parsed['bt'] = raw['b2c_c2c'].map(dict1)
@@ -118,11 +115,8 @@ parsed['dis'] = dis_attr[1]
 parsed['cross_city'] = dis_attr[2]
 parsed['cross_state'] = dis_attr[3]
 
-parsed['acc_hour'] = fattr[1]
-parsed['target'] = fattr[0]
+parsed['acc_hour'] = fattr[0]
 
-print('Before trimming:', parsed.shape)
-parsed = parsed[parsed['target'] >= 0]
-print('After trimming:', parsed.shape)
-parsed.to_csv('data/parsed_train.tsv', index=None, sep='\t')
+print('shape:', parsed.shape)
+parsed.to_csv('data/parsed_quiz.tsv', index=None, sep='\t')
 
