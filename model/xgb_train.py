@@ -5,7 +5,7 @@ import numpy as np
 
 folds = 10
 num_rounds = 15
-esr = 3
+esr = 2
 
 params = {
         'booster': 'gbtree',
@@ -50,7 +50,6 @@ for i in range(1, folds + 1):
     bst = xgb.train(params, dtrain, 
                     num_boost_round=num_rounds, 
                     evals=[(dtest, 'test1')], 
-                    feval=custom_asymmetric_eval, 
                     evals_result=results,
                     early_stopping_rounds=esr)
 
