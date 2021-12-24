@@ -54,7 +54,7 @@ for i in range(1, folds + 1):
                     early_stopping_rounds=esr)
 
     bst.save_model('para/xgb_{}.json'.format(i))
-    loss_and_output.append(min(results['test1']['ebay_loss']))
+    loss_and_output.append(min(results['test1']['rmse']))
 
 lao = np.array([1 / x for x in loss_and_output])
 lao = lao / lao.sum()
