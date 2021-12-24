@@ -26,7 +26,7 @@ for i in range(1, folds + 1):
     final_day = final_day + w[i - 1] * ypred
 
 
-real_quiz_set['target'] = pd.Series(np.ceil(final_day))
+real_quiz_set['target'] = pd.Series(np.round(final_day)) + 1
 res_set = real_quiz_set[['record_number', 'acceptance_scan_timestamp', 'target']]
 res_set['arrive_date'] = res_set.apply(add_func, axis=1)
 print("null res:", sum(res_set['arrive_date'].isnull()))

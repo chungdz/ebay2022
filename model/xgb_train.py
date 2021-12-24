@@ -27,7 +27,7 @@ params = {
 
 def custom_asymmetric_eval(preds, train_data):
     labels = train_data.get_label()
-    preds = np.ceil(preds)
+    preds = np.round(preds)
     residual = (labels - preds).astype("int")
     loss = np.where(residual < 0, residual * -0.6, residual * 0.4) 
     return "ebay_loss", np.mean(loss)
