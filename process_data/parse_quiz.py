@@ -29,7 +29,7 @@ def lldis(lat1, lat2, lon1, lon2):
     return(c * r)
 
 def add_func(row):
-    acct = row['acceptance_scan_timestamp']
+    acct = row['payment_datetime']
     arr = acct.split()
     cdate = datetime.strptime(arr[0], "%Y-%m-%d")
     acc_hour = int(arr[1][:2])

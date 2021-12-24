@@ -6,7 +6,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 def add_func(row):
-    acct = row['acceptance_scan_timestamp']
+    acct = row['payment_datetime']
     dd = row['target']
     cdate = datetime.strptime(acct.split()[0], "%Y-%m-%d")
     cdate = cdate + timedelta(days=dd)
@@ -27,7 +27,7 @@ for i in range(1, folds + 1):
 
 
 real_quiz_set['target'] = pd.Series(np.round(final_day)) + 1
-res_set = real_quiz_set[['record_number', 'acceptance_scan_timestamp', 'target']]
+res_set = real_quiz_set[['record_number', 'payment_datetime', 'target']]
 res_set['arrive_date'] = res_set.apply(add_func, axis=1)
 print("null res:", sum(res_set['arrive_date'].isnull()))
-res_set.drop(columns=['acceptance_scan_timestamp', 'target']).to_csv('result/xgb_result.tsv', header=None, index=None, sep='\t')
+res_set.drop(columns=['payment_datetime', 'target']).to_csv('result/xgb_result.tsv', header=None, index=None, sep='\t')
