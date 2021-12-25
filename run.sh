@@ -11,3 +11,6 @@ python -m process_data.set_zipcode_info
 python -m process_data.parse_train
 python -m process_data.split_train
 python -m process_data.parse_quiz
+
+python -m model.xgb_train
+python -m model.xgb_quiz
