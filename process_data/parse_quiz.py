@@ -39,8 +39,12 @@ def add_func(row):
         isdst = 0
     else:
         isdst = 1
+    
+    payd = row['payment_datetime']
+    arr2 = payd.split()
+    phour = int(arr2[1][:2])
         
-    return acc_hour, tz, isdst
+    return acc_hour, tz, isdst, phour, int(cdate.strftime("%Y%m%d"))
 
 def cal_dis(row):
     sender_tz = row['sender_tz']
@@ -56,7 +60,7 @@ def cal_dis(row):
         tz_dis = 0
     
     if sender_info['lat'] != False and re_info['lat'] != False:
-        dis = int(lldis(sender_info['lat'], re_info['lat'], sender_info['lng'], re_info['lng']) / 1000)
+        dis = float(lldis(sender_info['lat'], re_info['lat'], sender_info['lng'], re_info['lng']) / 1000)
     else:
         dis = -1
     
@@ -93,6 +97,11 @@ dict2 = {
     'VERY_LARGE_PACKAGE': 6
 }
 
+dict3 = {
+    2: 2.20462,
+    1: 1
+}
+
 print('load data')
 raw = pd.read_csv('data/quiz.tsv', sep='\t')
 zip_info = json.load(open('data/zipcode_dict.json', 'r'))
@@ -108,7 +117,7 @@ dis_attr = raw.progress_apply(cal_dis, axis=1, result_type='expand')
 
 parsed['bt'] = raw['b2c_c2c'].map(dict1)
 parsed['package_size'] = raw['package_size'].map(dict2)
-parsed['weight'] = raw['weight_units'] * raw['weight']
+parsed['weight'] = raw['weight_units'].map(dict3) * raw['weight']
 
 parsed['tz_dis'] = dis_attr[0]
 parsed['dis'] = dis_attr[1]
@@ -116,6 +125,8 @@ parsed['cross_city'] = dis_attr[2]
 parsed['cross_state'] = dis_attr[3]
 
 parsed['acc_hour'] = fattr[0]
+parsed['pay_hour'] = fattr[3]
+parsed['acc_date'] = fattr[4]
 
 print('shape:', parsed.shape)
 parsed.to_csv('data/parsed_quiz.tsv', index=None, sep='\t')
