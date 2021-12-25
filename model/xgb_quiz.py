@@ -21,7 +21,7 @@ w = json.load(open('para/xgb_weight.json', 'r'))
 final_day = np.zeros((quiz_set.shape[0]))
 for i in range(1, folds + 1):
     bst = xgb.Booster()
-    bst.load_model('para/xgb.json')
+    bst.load_model('para/xgb_{}.json'.format(i))
     ypred = bst.predict(dtest, iteration_range=(0, bst.best_iteration))
     final_day = final_day + w[i - 1] * ypred
 
