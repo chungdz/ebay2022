@@ -2,7 +2,6 @@ import xgboost as xgb
 import json
 import pandas as pd
 import numpy as np
-import pandas as pd
 from datetime import datetime, timedelta
 
 def add_func(row):
