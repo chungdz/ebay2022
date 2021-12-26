@@ -133,7 +133,9 @@ parsed['acc_date'] = fattr[5]
 parsed['target'] = fattr[0]
 
 print('Before trimming:', parsed.shape)
+parsed.to_csv('data/parsed_full_train.tsv', index=None, sep='\t')
 parsed = parsed[parsed['target'] >= 0]
+parsed = parsed[parsed['acc_date'] >= 20190101]
 print('After trimming:', parsed.shape)
 parsed.to_csv('data/parsed_train.tsv', index=None, sep='\t')
 
