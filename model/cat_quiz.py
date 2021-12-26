@@ -12,11 +12,11 @@ def add_func(row):
     cdate = cdate + timedelta(days=dd)
     return cdate.strftime("%Y-%m-%d")
 
-quiz_set = pd.read_csv('data/parsed_quiz.tsv', sep='\t')
+quiz_set = pd.read_csv('data/parsed_quiz.tsv', sep='\t').drop(['record_number'], axis=1)
 real_quiz_set = pd.read_csv('data/quiz.tsv', sep='\t')
 quiz_set['cross_city'] = quiz_set['cross_city'].astype('int')
 quiz_set['cross_state'] = quiz_set['cross_state'].astype('int')
-test_pool = Pool(quiz_set.drop(['record_number'],axis=1),
+test_pool = Pool(quiz_set,
                  cat_features=[0, 4, 7, 8, 12, 13],
                  feature_names=list(quiz_set.columns))
 
