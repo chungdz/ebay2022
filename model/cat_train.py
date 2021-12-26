@@ -76,6 +76,7 @@ for i in trange(1, folds + 1):
         curl = logstr[i]
         if 'bestTest' in curl:
             loss_and_output.append(float(curl.split()[-1]))
+            print(float(curl.split()[-1]))
             break
 
 lao = np.array([1 / x for x in loss_and_output])
