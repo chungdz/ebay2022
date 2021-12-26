@@ -55,10 +55,12 @@ for i in trange(1, folds + 1):
 
     train_pool = Pool(x_train, 
                   y_train, 
-                  cat_features=[0, 4, 7, 8, 12, 13])
+                  cat_features=[0, 4, 7, 8, 12, 13],
+                  feature_names=x_train.columns)
     test_pool = Pool(x_valid,
                  y_valid,
-                 cat_features=[0, 4, 7, 8, 12, 13]) 
+                 cat_features=[0, 4, 7, 8, 12, 13],
+                 feature_names=x_valid.columns) 
 
     model = CatBoostRegressor(iterations=num_rounds, 
                           depth=depth, 
