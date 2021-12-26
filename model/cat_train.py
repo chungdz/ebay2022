@@ -35,7 +35,7 @@ class EbayMetric(object):
 folds = 10
 num_rounds = 25
 esr = 3
-depth = 2
+depth = 6
 
 loss_and_output = []
 for i in trange(1, folds + 1):
