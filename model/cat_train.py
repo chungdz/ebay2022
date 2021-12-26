@@ -38,6 +38,7 @@ esr = 3
 depth = 6
 
 loss_and_output = []
+all_log = []
 for i in trange(1, folds + 1):
     print('model:', i)
     train_set = pd.read_csv('data/subtrain/train_{}.tsv'.format(i), sep='\t')
@@ -68,6 +69,7 @@ for i in trange(1, folds + 1):
     model.fit(train_pool, early_stopping_rounds=3, eval_set=test_pool, use_best_model=True, log_cout=open('result/output.txt', 'w'))
     model.save_model('para/catboost_{}.cbm'.format(i))
     logstr = open('result/output.txt', 'r').readlines()
+    all_log.append(logstr)
     llen = len(logstr)
     for i in range(llen - 1, -1, -1):
         curl = logstr[i]
@@ -80,3 +82,4 @@ lao = np.array([1 / x for x in loss_and_output])
 lao = lao / lao.sum()
 
 json.dump(list(lao), open('para/catboost_weight.json', 'w'))
+json.dump(list(lao), open('para/all_log.json', 'w'))
