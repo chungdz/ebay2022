@@ -15,3 +15,8 @@ python -m process_data.parse_quiz
 
 python -m model.xgb_train
 python -m model.xgb_quiz
+
+python -m model.LightGBM_train
+python -m model.LightGBM_quiz
+
+
