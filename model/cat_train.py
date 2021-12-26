@@ -3,6 +3,7 @@ from catboost import Pool, CatBoostRegressor
 import json
 import pandas as pd
 from tqdm import trange
+import argparse
 
 class EbayMetric(object):
     def get_final_error(self, error, weight):
@@ -37,9 +38,13 @@ num_rounds = 50
 esr = 3
 depth = 6
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--starti", default=1, type=int)
+args = parser.parse_args()
+
 loss_and_output = []
 all_log = []
-for i in trange(1, folds + 1):
+for i in trange(args.starti, folds + 1):
     print('model:', i)
     train_set = pd.read_csv('data/subtrain/train_{}.tsv'.format(i), sep='\t')
     train_set['cross_city'] = train_set['cross_city'].astype('int')
