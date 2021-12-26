@@ -33,7 +33,7 @@ class EbayMetric(object):
         return error_sum, weight_sum
 
 folds = 10
-num_rounds = 25
+num_rounds = 50
 esr = 3
 depth = 6
 
@@ -68,7 +68,12 @@ for i in trange(1, folds + 1):
     model.fit(train_pool, early_stopping_rounds=3, eval_set=test_pool, use_best_model=True, log_cout=open('result/output.txt', 'w'))
     model.save_model('para/catboost_{}.cbm'.format(i))
     logstr = open('result/output.txt', 'r').readlines()
-    loss_and_output.append(float(logstr[-4].split()[-1]))
+    llen = len(logstr)
+    for i in range(llen - 1, -1, -1):
+        curl = logstr[i]
+        if 'bestTest' in curl:
+            loss_and_output.append(float(curl.split()[-1]))
+            break
 
 lao = np.array([1 / x for x in loss_and_output])
 lao = lao / lao.sum()
