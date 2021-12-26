@@ -18,7 +18,7 @@ quiz_set['cross_city'] = quiz_set['cross_city'].astype('int')
 quiz_set['cross_state'] = quiz_set['cross_state'].astype('int')
 test_pool = Pool(quiz_set.drop(['record_number'],axis=1),
                  cat_features=[0, 4, 7, 8, 12, 13],
-                 feature_names=quiz_set.columns)
+                 feature_names=list(quiz_set.columns))
 
 folds = 10
 w = json.load(open('para/catboost_weight.json', 'r'))
