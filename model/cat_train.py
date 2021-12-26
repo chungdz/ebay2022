@@ -70,12 +70,12 @@ for i in trange(1, folds + 1):
     model.save_model('para/catboost_{}.cbm'.format(i))
     logstr = open('result/output.txt', 'r').readlines()
     all_log.append(logstr)
+    print(logstr)
     llen = len(logstr)
     for i in range(llen - 1, -1, -1):
         curl = logstr[i]
         if 'bestTest' in curl:
             loss_and_output.append(float(curl.split()[-1]))
-            print(float(curl.split()[-1]))
             break
 
 lao = np.array([1 / x for x in loss_and_output])
