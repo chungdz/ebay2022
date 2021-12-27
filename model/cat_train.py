@@ -90,4 +90,4 @@ lao = np.array([1 / x for x in loss_and_output])
 lao = lao / lao.sum()
 
 json.dump(list(lao), open('para/catboost_weight.json', 'w'))
-json.dump(list(lao), open('para/all_log.json', 'w'))
+json.dump(loss_and_output, open('para/all_log.json', 'w'))
