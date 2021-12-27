@@ -79,6 +79,7 @@ for i in trange(args.starti, folds + 1):
                           random_strength=args.random_strength,
                           one_hot_max_size=8,
                           l2_leaf_reg=args.l2_leaf,
+                          grow_policy='Depthwise',
                           eval_metric=EbayMetric())
     
     model.fit(train_pool, early_stopping_rounds=args.esr, eval_set=test_pool, use_best_model=True, log_cout=open('result/output.txt', 'w'))
