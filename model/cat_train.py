@@ -41,6 +41,7 @@ parser.add_argument("--starti", default=1, type=int)
 parser.add_argument("--depth", default=6, type=int)
 parser.add_argument("--num_rounds", default=1000, type=int)
 parser.add_argument("--border_count", default=254, type=int)
+parser.add_argument("--random_strength", default=1, type=int)
 parser.add_argument("--esr", default=3, type=int)
 args = parser.parse_args()
 
@@ -74,6 +75,7 @@ for i in trange(args.starti, folds + 1):
                           border_count=args.border_count,
                           learning_rate=1, 
                           loss_function='RMSE',
+                          random_strength=args.random_strength,
                           one_hot_max_size=8,
                           eval_metric=EbayMetric())
     
