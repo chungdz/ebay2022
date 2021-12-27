@@ -40,6 +40,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--starti", default=1, type=int)
 parser.add_argument("--depth", default=6, type=int)
 parser.add_argument("--num_rounds", default=1000, type=int)
+parser.add_argument("--border_count", default=254, type=int)
 parser.add_argument("--esr", default=3, type=int)
 args = parser.parse_args()
 
@@ -70,6 +71,7 @@ for i in trange(args.starti, folds + 1):
 
     model = CatBoostRegressor(iterations=args.num_rounds, 
                           depth=args.depth,
+                          border_count=args.border_count,
                           learning_rate=1, 
                           loss_function='RMSE',
                           one_hot_max_size=8,
