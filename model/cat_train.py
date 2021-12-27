@@ -43,6 +43,7 @@ parser.add_argument("--num_rounds", default=1000, type=int)
 parser.add_argument("--border_count", default=254, type=int)
 parser.add_argument("--random_strength", default=1, type=float)
 parser.add_argument("--esr", default=3, type=int)
+parser.add_argument("--l2_leaf", default=3, type=float)
 args = parser.parse_args()
 
 loss_and_output = []
@@ -77,6 +78,7 @@ for i in trange(args.starti, folds + 1):
                           loss_function='RMSE',
                           random_strength=args.random_strength,
                           one_hot_max_size=8,
+                          l2_leaf_reg=args.l2_leaf,
                           eval_metric=EbayMetric())
     
     model.fit(train_pool, early_stopping_rounds=args.esr, eval_set=test_pool, use_best_model=True, log_cout=open('result/output.txt', 'w'))
