@@ -110,7 +110,7 @@ raw = pd.read_csv('data/train.tsv', sep='\t')
 zip_info = json.load(open('data/zipcode_dict.json', 'r'))
 parsed = raw[['record_number', 'shipment_method_id', 'shipping_fee', 
 'carrier_min_estimate', 'carrier_max_estimate', 'category_id', 
-'item_price', 'quantity', 'declared_handling_days']]
+'item_price', 'quantity']]
 
 print('parsing data')
 fattr = raw.progress_apply(add_func, axis=1, result_type='expand')
