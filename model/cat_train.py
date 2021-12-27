@@ -36,10 +36,10 @@ class EbayMetric(object):
 folds = 10
 num_rounds = 50
 esr = 3
-depth = 6
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--starti", default=1, type=int)
+parser.add_argument("--depth", default=6, type=int)
 args = parser.parse_args()
 
 loss_and_output = []
@@ -68,7 +68,7 @@ for i in trange(args.starti, folds + 1):
                  feature_names=list(x_valid.columns))
 
     model = CatBoostRegressor(iterations=num_rounds, 
-                          depth=depth, 
+                          depth=args.depth, 
                           learning_rate=1, 
                           loss_function='RMSE',
                           eval_metric=EbayMetric())
