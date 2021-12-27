@@ -4,6 +4,7 @@ import json
 import pandas as pd
 from tqdm import trange
 from datetime import datetime, timedelta
+from model.cat_train import cat_set
 
 def add_func(row):
     acct = row['acceptance_scan_timestamp']
@@ -12,12 +13,21 @@ def add_func(row):
     cdate = cdate + timedelta(days=dd)
     return cdate.strftime("%Y-%m-%d")
 
-quiz_set = pd.read_csv('data/parsed_quiz.tsv', sep='\t').drop(['record_number'], axis=1)
-real_quiz_set = pd.read_csv('data/quiz.tsv', sep='\t')
+quiz_set = pd.read_csv('data/parsed_quiz.tsv', sep='\t')
 quiz_set['cross_city'] = quiz_set['cross_city'].astype('int')
 quiz_set['cross_state'] = quiz_set['cross_state'].astype('int')
+
+to_drop = json.load(open('config/to_drop.json', 'r'))
+quiz_set.drop(['record_number'] + to_drop, axis=1, inplace=True)
+cat_index = []
+for idx, cn in enumerate(quiz_set.columns):
+    if cn in cat_set:
+        cat_index.append(idx)
+
+real_quiz_set = pd.read_csv('data/quiz.tsv', sep='\t')
+
 test_pool = Pool(quiz_set,
-                 cat_features=[0, 4, 7, 8, 12, 13],
+                 cat_features=cat_index,
                  feature_names=list(quiz_set.columns))
 
 folds = 10

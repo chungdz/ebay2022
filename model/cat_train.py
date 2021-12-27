@@ -46,6 +46,10 @@ parser.add_argument("--esr", default=3, type=int)
 parser.add_argument("--l2_leaf", default=3, type=float)
 args = parser.parse_args()
 
+to_drop = json.load(open('config/to_drop.json', 'r'))
+print("columns to drop", to_drop)
+cat_set = set({"shipment_method_id", "category_id", "bt", "package_size", "cross_city", "cross_state"})
+
 loss_and_output = []
 all_log = []
 for i in trange(args.starti, folds + 1):
@@ -57,18 +61,23 @@ for i in trange(args.starti, folds + 1):
     valid_set['cross_city'] = valid_set['cross_city'].astype('int')
     valid_set['cross_state'] = valid_set['cross_state'].astype('int')
 
-    x_train = train_set.drop(['record_number', 'target'],axis=1)
+    x_train = train_set.drop(['record_number', 'target'] + to_drop, axis=1)
     y_train = train_set.target
-    x_valid = valid_set.drop(['record_number', 'target'],axis=1)
+    x_valid = valid_set.drop(['record_number', 'target'] + to_drop, axis=1)
     y_valid = valid_set.target
+
+    cat_index = []
+    for idx, cn in enumerate(x_train.columns):
+        if cn in cat_set:
+            cat_index.append(idx)
 
     train_pool = Pool(x_train, 
                   y_train, 
-                  cat_features=[0, 4, 7, 8, 12, 13],
+                  cat_features=cat_index,
                   feature_names=list(x_train.columns))
     test_pool = Pool(x_valid,
                  y_valid,
-                 cat_features=[0, 4, 7, 8, 12, 13],
+                 cat_features=cat_index,
                  feature_names=list(x_valid.columns))
 
     model = CatBoostRegressor(iterations=args.num_rounds, 
