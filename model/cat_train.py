@@ -34,13 +34,13 @@ class EbayMetric(object):
         return error_sum, weight_sum
 
 folds = 10
-num_rounds = 50
 esr = 3
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--starti", default=1, type=int)
 parser.add_argument("--depth", default=6, type=int)
-parser.add_argument("--num_tree", default=1000, type=int)
+parser.add_argument("--num_rounds", default=1000, type=int)
+parser.add_argument("--esr", default=3, type=int)
 args = parser.parse_args()
 
 loss_and_output = []
@@ -68,14 +68,13 @@ for i in trange(args.starti, folds + 1):
                  cat_features=[0, 4, 7, 8, 12, 13],
                  feature_names=list(x_valid.columns))
 
-    model = CatBoostRegressor(iterations=num_rounds, 
+    model = CatBoostRegressor(iterations=args.num_rounds, 
                           depth=args.depth,
-                          num_trees=args.num_tree, 
                           learning_rate=1, 
                           loss_function='RMSE',
                           eval_metric=EbayMetric())
     
-    model.fit(train_pool, early_stopping_rounds=3, eval_set=test_pool, use_best_model=True, log_cout=open('result/output.txt', 'w'))
+    model.fit(train_pool, early_stopping_rounds=args.esr, eval_set=test_pool, use_best_model=True, log_cout=open('result/output.txt', 'w'))
     model.save_model('para/catboost_{}.cbm'.format(i))
     logstr = open('result/output.txt', 'r').readlines()
     all_log.append(logstr)

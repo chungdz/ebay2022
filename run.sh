@@ -19,6 +19,6 @@ python -m model.xgb_quiz
 python -m model.LightGBM_train
 python -m model.LightGBM_quiz
 
-python -m model.cat_train --depth=6
+python -m model.cat_train --depth=6 --num_rounds=1000 --esr=3
 python -m model.cat_quiz
 
