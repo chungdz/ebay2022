@@ -41,7 +41,7 @@ parser.add_argument("--starti", default=1, type=int)
 parser.add_argument("--depth", default=6, type=int)
 parser.add_argument("--num_rounds", default=1000, type=int)
 parser.add_argument("--border_count", default=254, type=int)
-parser.add_argument("--random_strength", default=1, type=int)
+parser.add_argument("--random_strength", default=1, type=float)
 parser.add_argument("--esr", default=3, type=int)
 args = parser.parse_args()
 
