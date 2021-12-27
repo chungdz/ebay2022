@@ -72,6 +72,7 @@ for i in trange(args.starti, folds + 1):
                           depth=args.depth,
                           learning_rate=1, 
                           loss_function='RMSE',
+                          one_hot_max_size=8,
                           eval_metric=EbayMetric())
     
     model.fit(train_pool, early_stopping_rounds=args.esr, eval_set=test_pool, use_best_model=True, log_cout=open('result/output.txt', 'w'))
