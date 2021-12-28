@@ -65,7 +65,7 @@ for i in trange(args.starti, folds + 1):
     y_train = train_set.target
     x_valid = valid_set.drop(['record_number', 'target'] + to_drop, axis=1)
     y_valid = valid_set.target
-
+    print(x_train.columns)
     cat_index = []
     for idx, cn in enumerate(x_train.columns):
         if cn in cat_set:
