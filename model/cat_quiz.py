@@ -4,7 +4,6 @@ import json
 import pandas as pd
 from tqdm import trange
 from datetime import datetime, timedelta
-from model.cat_train import cat_set
 
 def add_func(row):
     acct = row['acceptance_scan_timestamp']
@@ -20,6 +19,7 @@ quiz_set['cross_state'] = quiz_set['cross_state'].astype('int')
 to_drop = json.load(open('config/to_drop.json', 'r'))
 quiz_set.drop(['record_number'] + to_drop, axis=1, inplace=True)
 cat_index = []
+cat_set = set({"shipment_method_id", "category_id", "bt", "package_size", "cross_city", "cross_state"})
 for idx, cn in enumerate(quiz_set.columns):
     if cn in cat_set:
         cat_index.append(idx)
