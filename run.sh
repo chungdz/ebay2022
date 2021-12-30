@@ -23,3 +23,10 @@ python -m model.LightGBM_quiz
 python -m model.cat_train --depth=12 --num_rounds=1000 --esr=3 --border_count=254, --random_strength=1, --l2_leaf=3
 python -m model.cat_quiz
 
+python -m model.nn_train_single.py --starti=4
+python -m model.nn_train_single.py --starti=5
+python -m model.nn_train_single.py --starti=6
+python -m model.nn_train_single.py --starti=7
+python -m model.nn_train_single.py --starti=8
+python -m model.nn_train_single.py --starti=9
+python -m model.nn_train_single.py --starti=10
