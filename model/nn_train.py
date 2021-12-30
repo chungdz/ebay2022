@@ -32,8 +32,8 @@ loss_and_output = []
 all_log = []
 for i in trange(args.starti, folds + 1):
     print('model:', i)
-    train_set = pd.read_csv('data/subtrain/train_{}.tsv'.format(i), sep='\t')
-    valid_set = pd.read_csv('data/subtrain/valid_{}.tsv'.format(i), sep='\t')
+    train_set = pd.read_csv('data/subtrain_cat/train_{}.tsv'.format(i), sep='\t')
+    valid_set = pd.read_csv('data/subtrain_cat/valid_{}.tsv'.format(i), sep='\t')
 
     x_train = train_set.drop(['record_number', 'target'], axis=1)
     y_train = train_set.target
@@ -60,9 +60,9 @@ for i in trange(args.starti, folds + 1):
 
     batch_size = 32
     history = model.fit(x_train, y_train, batch_size=batch_size, epochs=3, validation_data=(x_valid, y_valid),
-                        callbacks=[callback])
-    model.save('para/nn_{}.cbm'.format(i))
-    logstr = pd.read_csv("result/Keraslog.csv", sep=';')
+                        callbacks=[callbacks])
+    model.save('para/nn_{}.h5'.format(i))
+    logstr = pd.read_csv("result/log.csv", sep=';')
     # only final loss is saved in Keras log
     loss_and_output.append(float(logstr.val_custom_asymmetric_eval))
 
