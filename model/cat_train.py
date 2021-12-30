@@ -3,6 +3,7 @@ from catboost import Pool, CatBoostRegressor
 import json
 import pandas as pd
 from tqdm import trange
+import argparse
 
 class EbayMetric(object):
     def get_final_error(self, error, weight):
@@ -33,13 +34,25 @@ class EbayMetric(object):
         return error_sum, weight_sum
 
 folds = 10
-num_rounds = 50
 esr = 3
-depth = 6
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--starti", default=1, type=int)
+parser.add_argument("--depth", default=12, type=int)
+parser.add_argument("--num_rounds", default=1000, type=int)
+parser.add_argument("--border_count", default=254, type=int)
+parser.add_argument("--random_strength", default=1, type=float)
+parser.add_argument("--esr", default=3, type=int)
+parser.add_argument("--l2_leaf", default=3, type=float)
+args = parser.parse_args()
+
+to_drop = json.load(open('config/to_drop.json', 'r'))
+print("columns to drop", to_drop)
+cat_set = set({"shipment_method_id", "category_id", "bt", "package_size", "cross_city", "cross_state"})
 
 loss_and_output = []
 all_log = []
-for i in trange(1, folds + 1):
+for i in trange(args.starti, folds + 1):
     print('model:', i)
     train_set = pd.read_csv('data/subtrain/train_{}.tsv'.format(i), sep='\t')
     train_set['cross_city'] = train_set['cross_city'].astype('int')
@@ -48,25 +61,37 @@ for i in trange(1, folds + 1):
     valid_set['cross_city'] = valid_set['cross_city'].astype('int')
     valid_set['cross_state'] = valid_set['cross_state'].astype('int')
 
-    x_train = train_set.drop(['record_number', 'target'],axis=1)
+    x_train = train_set.drop(['record_number', 'target'] + to_drop, axis=1)
     y_train = train_set.target
-    x_valid = valid_set.drop(['record_number', 'target'],axis=1)
+    x_valid = valid_set.drop(['record_number', 'target'] + to_drop, axis=1)
     y_valid = valid_set.target
+    print(x_train.columns)
+    cat_index = []
+    for idx, cn in enumerate(x_train.columns):
+        if cn in cat_set:
+            cat_index.append(idx)
 
     train_pool = Pool(x_train, 
                   y_train, 
-                  cat_features=[0, 4, 7, 8, 12, 13])
+                  cat_features=cat_index,
+                  feature_names=list(x_train.columns))
     test_pool = Pool(x_valid,
                  y_valid,
-                 cat_features=[0, 4, 7, 8, 12, 13]) 
+                 cat_features=cat_index,
+                 feature_names=list(x_valid.columns))
 
-    model = CatBoostRegressor(iterations=num_rounds, 
-                          depth=depth, 
+    model = CatBoostRegressor(iterations=args.num_rounds, 
+                          depth=args.depth,
+                          border_count=args.border_count,
                           learning_rate=1, 
                           loss_function='RMSE',
+                          random_strength=args.random_strength,
+                          one_hot_max_size=8,
+                          l2_leaf_reg=args.l2_leaf,
+                          grow_policy='SymmetricTree',
                           eval_metric=EbayMetric())
     
-    model.fit(train_pool, early_stopping_rounds=3, eval_set=test_pool, use_best_model=True, log_cout=open('result/output.txt', 'w'))
+    model.fit(train_pool, early_stopping_rounds=args.esr, eval_set=test_pool, use_best_model=True, log_cout=open('result/output.txt', 'w'))
     model.save_model('para/catboost_{}.cbm'.format(i))
     logstr = open('result/output.txt', 'r').readlines()
     all_log.append(logstr)
@@ -83,4 +108,5 @@ lao = np.array([1 / x for x in loss_and_output])
 lao = lao / lao.sum()
 
 json.dump(list(lao), open('para/catboost_weight.json', 'w'))
-json.dump(list(lao), open('para/all_log.json', 'w'))
+json.dump(loss_and_output, open('para/all_log.json', 'w'))
+print('mean loss:', np.mean(loss_and_output))

@@ -1,7 +1,13 @@
 import pandas as pd
 from tqdm import trange
+import argparse
 
-data = pd.read_csv('data/parsed_train.tsv', sep='\t')
+parser = argparse.ArgumentParser()
+parser.add_argument("--target", default='parsed_train.tsv', type=str)
+parser.add_argument("--filename", default='subtrain', type=str)
+args = parser.parse_args()
+
+data = pd.read_csv('data/{}'.format(args.target), sep='\t')
 folds = 10
 split_num = int(data.shape[0] / 10)
 
@@ -21,6 +27,6 @@ for i in trange(1, folds + 1):
     cur_train = pd.concat([pre_subset, nxt_subset], axis=0)
     cur_valid = data[start_index: end_index]
     
-    cur_train.to_csv('data/subtrain/train_{}.tsv'.format(i), index=None, sep='\t')
-    cur_valid.to_csv('data/subtrain/valid_{}.tsv'.format(i), index=None, sep='\t')
+    cur_train.to_csv('data/{}/train_{}.tsv'.format(args.filename, i), index=None, sep='\t')
+    cur_valid.to_csv('data/{}/valid_{}.tsv'.format(args.filename, i), index=None, sep='\t')
     print(start_index, end_index, cur_train.shape, cur_valid.shape)

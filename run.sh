@@ -11,6 +11,7 @@ python -m process_data.set_zipcode_info
 python -m process_data.parse_train
 python -m process_data.split_train
 python -m process_data.parse_quiz
+python -m process_data.one_hot_encode
 
 
 python -m model.xgb_train
@@ -19,6 +20,6 @@ python -m model.xgb_quiz
 python -m model.LightGBM_train
 python -m model.LightGBM_quiz
 
-python -m model.cat_train
+python -m model.cat_train --depth=12 --num_rounds=1000 --esr=3 --border_count=254, --random_strength=1, --l2_leaf=3
 python -m model.cat_quiz
 
