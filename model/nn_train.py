@@ -20,10 +20,7 @@ esr = 3
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--starti", default=1, type=int)
-parser.add_argument("--depth", default=12, type=int)
 parser.add_argument("--num_rounds", default=1000, type=int)
-parser.add_argument("--border_count", default=254, type=int)
-parser.add_argument("--random_strength", default=1, type=float)
 parser.add_argument("--esr", default=3, type=int)
 parser.add_argument("--l2_leaf", default=3, type=float)
 args = parser.parse_args()
@@ -32,13 +29,13 @@ loss_and_output = []
 all_log = []
 for i in trange(args.starti, folds + 1):
     print('model:', i)
-    train_set = pd.read_csv('data/subtrain_cat/train_{}.tsv'.format(i), sep='\t')
-    valid_set = pd.read_csv('data/subtrain_cat/valid_{}.tsv'.format(i), sep='\t')
+    x_train = pd.read_csv('data/subtrain_cat/train_{}.tsv'.format(i), sep='\t')
+    x_valid = pd.read_csv('data/subtrain_cat/valid_{}.tsv'.format(i), sep='\t')
 
-    x_train = train_set.drop(['record_number', 'target'], axis=1)
-    y_train = train_set.target
-    x_valid = valid_set.drop(['record_number', 'target'], axis=1)
-    y_valid = valid_set.target
+    y_train = x_train.target
+    x_train = x_train.drop(['record_number', 'target'], axis=1)
+    y_valid = x_valid.target
+    x_valid = x_valid.drop(['record_number', 'target'], axis=1)
 
     ## nn model
     inputs = keras.Input(shape=(82,))
@@ -54,15 +51,15 @@ for i in trange(args.starti, folds + 1):
     model = keras.Model(inputs, outputs)
 
     callbacks = [tf.keras.callbacks.EarlyStopping(monitor='custom_asymmetric_eval', patience=3),
-                 CSVLogger('result/log.csv', append=False, separator=';')]
+                 CSVLogger('result/log_{}.csv'.format(i), append=False, separator=';')]
     # Compile the model
-    model.compile(optimizer="adam", loss="mean_squared_error", metrics=[custom_asymmetric_eval], callbacks=[callbacks])
+    model.compile(optimizer="adam", loss="mean_squared_error", metrics=[custom_asymmetric_eval])
 
     batch_size = 32
-    history = model.fit(x_train, y_train, batch_size=batch_size, epochs=3, validation_data=(x_valid, y_valid),
+    history = model.fit(x_train, y_train, batch_size=batch_size, epochs=1, validation_data=(x_valid, y_valid),
                         callbacks=[callbacks])
     model.save('para/nn_{}.h5'.format(i))
-    logstr = pd.read_csv("result/log.csv", sep=';')
+    logstr = pd.read_csv("result/log_{}.csv".format(i), sep=';')
     # only final loss is saved in Keras log
     loss_and_output.append(float(logstr.val_custom_asymmetric_eval))
 
