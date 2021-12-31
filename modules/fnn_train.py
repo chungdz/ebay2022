@@ -63,7 +63,7 @@ def train(cfg, epoch, model, loader, optimizer, steps_one_epoch):
         
         # 1. Forward
         pred = model(data[:, :-1]).squeeze()
-        loss = F.cross_entropy(pred, data[:, -1])
+        loss = F.cross_entropy(pred, data[:, -1].long())
 
         # 3.Backward.
         loss.backward()
