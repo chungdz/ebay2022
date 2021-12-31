@@ -56,6 +56,7 @@ def train(cfg, epoch, model, loader, optimizer, steps_one_epoch):
     model.zero_grad()
     enum_dataloader = tqdm(loader, total=len(loader), desc="EP-{} train".format(epoch))
     index = 0
+    mean_loss = 0
     for data in enum_dataloader:
         if index >= steps_one_epoch:
             break
@@ -74,7 +75,10 @@ def train(cfg, epoch, model, loader, optimizer, steps_one_epoch):
         model.zero_grad()
         # index add
         index += 1
-        enum_dataloader.set_description("EP-{} train, batch {} loss is {}".format(epoch, index, loss))
+        mean_loss += loss
+        if index % cfg.show_batch == 0 and index > 0:
+            cur_mean_loss = mean_loss / cfg.show_batch
+            enum_dataloader.set_description("EP-{} train, batch {} loss is {}".format(epoch, index, cur_mean_loss))
 
 def validate(cfg, model, valid_data_loader):
     model.eval()  
@@ -103,6 +107,7 @@ parser.add_argument("--folds", default=10, type=int)
 parser.add_argument("--epoch", default=3, type=int)
 parser.add_argument("--lr", default=0.001, type=int)
 parser.add_argument("--save_path", default='para', type=str)
+parser.add_argument("--show_batch", default=1000, type=int)
 args = parser.parse_args()
 
 loss_and_output = []
