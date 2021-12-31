@@ -1,3 +1,4 @@
+import enum
 import numpy as np
 import json
 import pandas as pd
@@ -53,10 +54,10 @@ def run(cfg, train_dataset, valid_dataset, fp):
 def train(cfg, epoch, model, loader, optimizer, steps_one_epoch):
     model.train()
     model.zero_grad()
-    enum_dataloader = enumerate(tqdm(loader, total=len(loader), desc="EP-{} train".format(epoch)))
-
-    for i, data in enum_dataloader:
-        if i >= steps_one_epoch:
+    enum_dataloader = tqdm(loader, total=len(loader), desc="EP-{} train".format(epoch))
+    index = 0
+    for data in enum_dataloader:
+        if index >= steps_one_epoch:
             break
         
         # 1. Forward
@@ -71,6 +72,9 @@ def train(cfg, epoch, model, loader, optimizer, steps_one_epoch):
         optimizer.step()
         # scheduler.step()
         model.zero_grad()
+        # index add
+        index += 1
+        enum_dataloader.set_description("EP-{} train, batch {} loss is {}".format(epoch, index, loss))
 
 def validate(cfg, model, valid_data_loader):
     model.eval()  
