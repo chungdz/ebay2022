@@ -11,6 +11,7 @@ from config.dl import FNNData
 import torch
 import os
 from tqdm import tqdm
+import gc
 import torch.nn.functional as F
 
 def run(cfg, train_dataset, valid_dataset, fp):
@@ -121,6 +122,8 @@ for i in range(1, args.folds + 1):
     valid_dataset = FNNData('data/subtrain_cat/valid_{}.tsv'.format(i))
     cur_loss = run(args, train_dataset, valid_dataset, os.path.join(args.save_path, 'pfnn_{}'.format(i)))
     loss_and_output.append(cur_loss)
+    del train_dataset, valid_dataset
+    gc.collect()
 
 lao = np.array([1 / x for x in loss_and_output])
 lao = lao / lao.sum()
