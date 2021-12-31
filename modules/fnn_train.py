@@ -28,7 +28,7 @@ def run(cfg, train_dataset, valid_dataset, fp):
     valid_data_loader = DataLoader(valid_dataset, batch_size=32, shuffle=False)
 
     # Build model.
-    model = FNN(train_dataset.__feature_len__)
+    model = FNN(train_dataset.__feature_len__())
     # Build optimizer.
     steps_one_epoch = len(train_data_loader)
     train_steps = cfg.epoch * steps_one_epoch
@@ -102,7 +102,7 @@ parser.add_argument("--save_path", default='para', type=str)
 args = parser.parse_args()
 
 loss_and_output = []
-for i in trange(1, args.folds + 1):
+for i in range(1, args.folds + 1):
     print('model:', i)
     train_dataset = FNNData('data/subtrain_cat/train_{}.tsv'.format(i))
     valid_dataset = FNNData('data/subtrain_cat/valid_{}.tsv'.format(i))
