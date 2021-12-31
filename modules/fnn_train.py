@@ -92,7 +92,7 @@ def validate(cfg, model, valid_data_loader):
             # 1. Forward
             pred = model(data[:, :-1])
             pred = torch.softmax(pred, dim=1)
-            pred = pred * torch.arange(pred.size(1)).unsqueeze(0)
+            pred = pred / (torch.sum(pred, dim=1, keepdim=True))
             pred = torch.sum(pred, dim=1)
             if pred.dim() > 1:
                 pred = pred.squeeze()
@@ -111,7 +111,7 @@ def validate(cfg, model, valid_data_loader):
 parser = argparse.ArgumentParser()
 parser.add_argument("--folds", default=10, type=int)
 parser.add_argument("--epoch", default=1, type=int)
-parser.add_argument("--batch_size", default=32, type=int)
+parser.add_argument("--batch_size", default=128, type=int)
 parser.add_argument("--lr", default=0.001, type=int)
 parser.add_argument("--save_path", default='para', type=str)
 parser.add_argument("--show_batch", default=1000, type=int)

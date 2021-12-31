@@ -21,7 +21,7 @@ def test(cfg, model, valid_data_loader):
         for data in tqdm(valid_data_loader, total=len(valid_data_loader), desc='test'):
             # 1. Forward
             pred = model(data)
-            pred = torch.softmax(pred, dim=1)
+            pred = pred / (torch.sum(pred, dim=1, keepdim=True))
             pred = pred * torch.arange(pred.size(1)).unsqueeze(0)
             pred = torch.sum(pred, dim=1)
             
@@ -64,7 +64,7 @@ for i in range(1, args.folds + 1):
     final_day = final_day + w[i - 1] * res
     
 real_quiz_set = pd.read_csv('data/quiz.tsv', sep='\t')
-real_quiz_set['target'] = pd.Series(np.argmax(final_day, axis=1))
+real_quiz_set['target'] = pd.Series(np.round(final_day, axis=1))
 res_set = real_quiz_set[['record_number', 'acceptance_scan_timestamp', 'target']]
 res_set['arrive_date'] = res_set.apply(add_func, axis=1)
 print("null res:", sum(res_set['arrive_date'].isnull()))
