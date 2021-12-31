@@ -107,7 +107,7 @@ def validate(cfg, model, valid_data_loader):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--folds", default=10, type=int)
-parser.add_argument("--epoch", default=3, type=int)
+parser.add_argument("--epoch", default=1, type=int)
 parser.add_argument("--batch_size", default=32, type=int)
 parser.add_argument("--lr", default=0.001, type=int)
 parser.add_argument("--save_path", default='para', type=str)
