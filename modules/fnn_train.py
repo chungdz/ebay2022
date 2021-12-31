@@ -77,9 +77,9 @@ def train(cfg, epoch, model, loader, optimizer, steps_one_epoch):
         index += 1
         mean_loss += loss
         if index % cfg.show_batch == 0 and index > 0:
-            mean_loss = 0
             cur_mean_loss = mean_loss / cfg.show_batch
             enum_dataloader.set_description("EP-{} train, batch {} loss is {}".format(epoch, index, cur_mean_loss))
+            mean_loss = 0
 
 def validate(cfg, model, valid_data_loader):
     model.eval()  
