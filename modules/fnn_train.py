@@ -62,8 +62,8 @@ def train(cfg, epoch, model, loader, optimizer, steps_one_epoch):
             break
         
         # 1. Forward
-        pred = model(data[:, :-1])
-        loss = F.mse_loss(pred, data[:, -1].unsqueeze(-1))
+        pred = model(data[:, :-1]).squeeze()
+        loss = F.cross_entropy(pred, data[:, -1])
 
         # 3.Backward.
         loss.backward()
@@ -90,6 +90,7 @@ def validate(cfg, model, valid_data_loader):
         for data in valid_data_loader:
             # 1. Forward
             pred = model(data[:, :-1])
+            pred = torch.argmax(pred, dim=1)
             if pred.dim() > 1:
                 pred = pred.squeeze()
             try:

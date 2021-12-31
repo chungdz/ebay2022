@@ -20,6 +20,7 @@ def test(cfg, model, valid_data_loader):
         for data in tqdm(valid_data_loader, total=int(len(valid_data_loader) / cfg.batch_size), desc='test'):
             # 1. Forward
             pred = model(data)
+            pred = torch.argmax(pred, dim=1)
             if pred.dim() > 1:
                 pred = pred.squeeze()
             try:
@@ -27,7 +28,6 @@ def test(cfg, model, valid_data_loader):
             except:
                 preds.append(int(pred.cpu().numpy()))
 
-        preds = np.round(preds)
         return preds
 
 parser = argparse.ArgumentParser()
