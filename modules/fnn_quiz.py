@@ -32,7 +32,7 @@ def test(cfg, model, valid_data_loader):
             except:
                 preds.append(int(pred.cpu().numpy()))
 
-        return preds
+        return np.array(preds)
 
 def add_func(row):
     acct = row['acceptance_scan_timestamp']
@@ -64,7 +64,7 @@ for i in range(1, args.folds + 1):
     final_day = final_day + w[i - 1] * res
     
 real_quiz_set = pd.read_csv('data/quiz.tsv', sep='\t')
-real_quiz_set['target'] = pd.Series(np.round(final_day, axis=1))
+real_quiz_set['target'] = pd.Series(np.round(final_day))
 res_set = real_quiz_set[['record_number', 'acceptance_scan_timestamp', 'target']]
 res_set['arrive_date'] = res_set.apply(add_func, axis=1)
 print("null res:", sum(res_set['arrive_date'].isnull()))
