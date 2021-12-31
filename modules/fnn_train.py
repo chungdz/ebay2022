@@ -91,7 +91,9 @@ def validate(cfg, model, valid_data_loader):
         for data in valid_data_loader:
             # 1. Forward
             pred = model(data[:, :-1])
-            pred = torch.argmax(pred, dim=1)
+            pred = torch.softmax(pred, dim=1)
+            pred = pred * torch.arange(pred.size(1)).unsqueeze(0)
+            pred = torch.sum(pred, dim=1)
             if pred.dim() > 1:
                 pred = pred.squeeze()
             try:
