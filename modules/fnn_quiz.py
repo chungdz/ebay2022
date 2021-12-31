@@ -21,10 +21,18 @@ def test(cfg, model, valid_data_loader):
         for data in tqdm(valid_data_loader, total=len(valid_data_loader), desc='test'):
             # 1. Forward
             pred = model(data)
-            # pred = torch.argmax(pred, dim=1)
-            preds.append(pred)
+            pred = torch.softmax(pred, dim=1)
+            pred = pred * torch.arange(pred.size(1)).unsqueeze(0)
+            pred = torch.sum(pred, dim=1)
+            
+            if pred.dim() > 1:
+                pred = pred.squeeze()
+            try:
+                preds += pred.numpy().tolist()
+            except:
+                preds.append(int(pred.cpu().numpy()))
 
-        return np.concatenate(preds, axis=0)
+        return preds
 
 def add_func(row):
     acct = row['acceptance_scan_timestamp']
