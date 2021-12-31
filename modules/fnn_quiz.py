@@ -37,10 +37,11 @@ parser.add_argument("--batch_size", default=64, type=int)
 args = parser.parse_args()
 
 test_dataset = FNNData('data/parsed_quiz_cat.tsv', test_mode=True)
-test_dl = DataLoader(test_dataset, shuffle=False, batch_size=args.batch_size)
 model = FNN(test_dataset.__feature_len__())
 
-saved_model_path = os.path.join(args.save_path, 'pfnn_{}'.format(1))
+test_dl = DataLoader(test_dataset, shuffle=False, batch_size=args.batch_size)
+# saved_model_path = os.path.join(args.save_path, 'pfnn_{}'.format(1))
+saved_model_path = os.path.join(args.save_path, 'fnn_tmp')
 if not os.path.exists(saved_model_path):
     print("Not Exist: {}".format(saved_model_path))
     exit()
