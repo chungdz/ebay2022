@@ -12,7 +12,7 @@ class FNNData(Dataset):
         else:
             x_train = pd.read_csv(train_data_path, sep='\t')
             self.x = torch.FloatTensor(x_train.drop(['target'], axis=1).values)
-            self.y = torch.FloatTensor(x_train.target.values).unsqueeze(-1)
+            self.y = torch.LongTensor(x_train.target.values).unsqueeze(-1)
 
     def __getitem__(self, index):
         if self.tm:
