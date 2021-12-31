@@ -80,6 +80,7 @@ def train(cfg, epoch, model, loader, optimizer, steps_one_epoch):
             cur_mean_loss = mean_loss / cfg.show_batch
             enum_dataloader.set_description("EP-{} train, batch {} loss is {}".format(epoch, index, cur_mean_loss))
             mean_loss = 0
+            torch.save(model.state_dict(), 'para/fnn_tmp')
 
 def validate(cfg, model, valid_data_loader):
     model.eval()  
