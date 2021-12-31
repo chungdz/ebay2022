@@ -47,6 +47,9 @@ class FNN(nn.Module):
         x = self.h1(data)
         x = self.h2(x)
         x = self.h3(x)
-        output = self.h4(x)
+        x = self.h4(x)
+        x = self.h5(x)
+        x = self.h6(x)
+        output = self.h7(x)
 
         return output
