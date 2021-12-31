@@ -17,7 +17,7 @@ def test(model, valid_data_loader):
         
     with torch.no_grad():
         preds = []
-        for data in valid_data_loader:
+        for data in tqdm(valid_data_loader, total=len(valid_data_loader), desc='test'):
             # 1. Forward
             pred = model(data)
             if pred.dim() > 1:
@@ -39,7 +39,7 @@ test_dataset = FNNData('data/parsed_quiz_cat.tsv', test_mode=True)
 test_dl = DataLoader(test_dataset, shuffle=False)
 model = FNN(test_dataset.__feature_len__())
 
-saved_model_path = os.path.join(args.saved_path, 'pfnn_{}'.format(1))
+saved_model_path = os.path.join(args.save_path, 'pfnn_{}'.format(1))
 if not os.path.exists(saved_model_path):
     print("Not Exist: {}".format(saved_model_path))
     exit()
