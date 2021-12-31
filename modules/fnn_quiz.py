@@ -50,7 +50,7 @@ args = parser.parse_args()
 test_dataset = FNNData('data/parsed_quiz_cat.tsv', test_mode=True)
 model = FNN(test_dataset.__feature_len__())
 w = json.load(open('para/pfnn_weight.json', 'r'))
-final_day = np.zeros((test_dataset.__len__(), 128))
+final_day = np.zeros((test_dataset.__len__()))
 for i in range(1, args.folds + 1):
     test_dl = DataLoader(test_dataset, shuffle=False, batch_size=args.batch_size)
     saved_model_path = os.path.join(args.save_path, 'pfnn_{}'.format(i))
