@@ -12,6 +12,7 @@ python -m process_data.parse_train
 python -m process_data.split_train
 python -m process_data.parse_quiz
 python -m process_data.one_hot_encode
+python -m process_data.split_train --target parsed_train_cat.tsv --filename=subtrain_cat
 
 
 python -m model.xgb_train
