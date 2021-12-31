@@ -25,8 +25,8 @@ def run(cfg, train_dataset, valid_dataset, fp):
     
     set_seed(7)
     # Build Dataloader
-    train_data_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-    valid_data_loader = DataLoader(valid_dataset, batch_size=32, shuffle=False)
+    train_data_loader = DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True)
+    valid_data_loader = DataLoader(valid_dataset, batch_size=cfg.batch_size, shuffle=False)
 
     # Build model.
     model = FNN(train_dataset.__feature_len__())
@@ -105,6 +105,7 @@ def validate(cfg, model, valid_data_loader):
 parser = argparse.ArgumentParser()
 parser.add_argument("--folds", default=10, type=int)
 parser.add_argument("--epoch", default=3, type=int)
+parser.add_argument("--batch_size", default=32, type=int)
 parser.add_argument("--lr", default=0.001, type=int)
 parser.add_argument("--save_path", default='para', type=str)
 parser.add_argument("--show_batch", default=1000, type=int)
