@@ -39,6 +39,12 @@ for i in range(1, folds + 1):
     ypred = cb.predict(test_pool)
     final_day = final_day + w[i - 1] * ypred
 
+to_save = []
+for rnumber, predict_value in zip(real_quiz_set['record_number'].values, final_day):
+    to_save.append([rnumber, predict_value])
+savedf = pd.DataFrame(to_save, columns=['record_number', 'catboost_predict'])
+savedf.to_csv('data/sl_data/catboost_quiz.tsv', sep='\t', index=None) 
+
 real_quiz_set['target'] = pd.Series(np.round(final_day))
 res_set = real_quiz_set[['record_number', 'acceptance_scan_timestamp', 'target']]
 res_set['arrive_date'] = res_set.apply(add_func, axis=1)

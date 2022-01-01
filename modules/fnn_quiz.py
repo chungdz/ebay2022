@@ -71,7 +71,6 @@ for rnumber, predict_value in zip(real_quiz_set['record_number'].values, final_d
 savedf = pd.DataFrame(to_save, columns=['record_number', 'pFNN_predict'])
 savedf.to_csv('data/sl_data/pfnn_quiz.tsv', sep='\t', index=None) 
 
-
 real_quiz_set['target'] = pd.Series(np.round(final_day))
 res_set = real_quiz_set[['record_number', 'acceptance_scan_timestamp', 'target']]
 res_set['arrive_date'] = res_set.apply(add_func, axis=1)

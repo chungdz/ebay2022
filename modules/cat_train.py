@@ -53,6 +53,8 @@ cat_set = set({"shipment_method_id", "category_id", "bt", "package_size", "cross
 
 loss_and_output = []
 all_log = []
+total_rc = []
+total_preds = []
 for i in trange(args.starti, folds + 1):
     print('model:', i)
     train_set = pd.read_csv('data/subtrain/train_{}.tsv'.format(i), sep='\t')
@@ -105,8 +107,17 @@ for i in trange(args.starti, folds + 1):
             print(float(curl.split()[-1]))
             break
     
+    preds = model.predict(test_pool)
+    total_preds += preds.flatten().tolist()
+    total_rc += valid_set.record_number.values
     del train_set, valid_set, x_train, x_valid, y_train, y_valid, train_pool, test_pool
     gc.collect()
+
+to_save = []
+for rnumber, predict_value in zip(total_rc, total_preds):
+    to_save.append([rnumber, predict_value])
+savedf = pd.DataFrame(to_save, columns=['record_number', 'catboost_predict'])
+savedf.to_csv('data/sl_data/catboost_train.tsv', sep='\t', index=None) 
 
 lao = np.array([1 / x for x in loss_and_output])
 lao = lao / lao.sum()
