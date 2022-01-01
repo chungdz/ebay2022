@@ -93,6 +93,7 @@ def validate(cfg, model, valid_data_loader):
             # 1. Forward
             pred = model(data[:, :-2])
             pred = pred / (torch.sum(pred, dim=1, keepdim=True))
+            pred = pred * torch.arange(pred.size(1)).unsqueeze(0)
             pred = torch.sum(pred, dim=1)
             if pred.dim() > 1:
                 pred = pred.squeeze()
