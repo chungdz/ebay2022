@@ -21,10 +21,6 @@ def test(cfg, model, valid_data_loader):
         for data in tqdm(valid_data_loader, total=len(valid_data_loader), desc='test'):
             # 1. Forward
             pred = model(data[:, :-1])
-            pred = pred / (torch.sum(pred, dim=1, keepdim=True))
-            pred = pred * torch.arange(pred.size(1)).unsqueeze(0)
-            pred = torch.sum(pred, dim=1)
-            
             if pred.dim() > 1:
                 pred = pred.squeeze()
             try:
