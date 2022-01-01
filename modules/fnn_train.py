@@ -11,6 +11,7 @@ from config.dl import FNNData
 import torch
 import os
 from tqdm import tqdm
+import gc
 import torch.nn.functional as F
 
 def run(cfg, train_dataset, valid_dataset, fp):
@@ -62,8 +63,8 @@ def train(cfg, epoch, model, loader, optimizer, steps_one_epoch):
             break
         
         # 1. Forward
-        pred = model(data[:, :-1])
-        loss = F.mse_loss(pred, data[:, -1].unsqueeze(-1))
+        pred = model(data[:, :-1]).squeeze()
+        loss = F.cross_entropy(pred, data[:, -1].long())
 
         # 3.Backward.
         loss.backward()
@@ -90,6 +91,9 @@ def validate(cfg, model, valid_data_loader):
         for data in valid_data_loader:
             # 1. Forward
             pred = model(data[:, :-1])
+            pred = torch.softmax(pred, dim=1)
+            pred = pred / (torch.sum(pred, dim=1, keepdim=True))
+            pred = torch.sum(pred, dim=1)
             if pred.dim() > 1:
                 pred = pred.squeeze()
             try:
@@ -106,8 +110,8 @@ def validate(cfg, model, valid_data_loader):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--folds", default=10, type=int)
-parser.add_argument("--epoch", default=3, type=int)
-parser.add_argument("--batch_size", default=32, type=int)
+parser.add_argument("--epoch", default=1, type=int)
+parser.add_argument("--batch_size", default=256, type=int)
 parser.add_argument("--lr", default=0.001, type=int)
 parser.add_argument("--save_path", default='para', type=str)
 parser.add_argument("--show_batch", default=1000, type=int)
@@ -120,6 +124,8 @@ for i in range(1, args.folds + 1):
     valid_dataset = FNNData('data/subtrain_cat/valid_{}.tsv'.format(i))
     cur_loss = run(args, train_dataset, valid_dataset, os.path.join(args.save_path, 'pfnn_{}'.format(i)))
     loss_and_output.append(cur_loss)
+    del train_dataset, valid_dataset
+    gc.collect()
 
 lao = np.array([1 / x for x in loss_and_output])
 lao = lao / lao.sum()

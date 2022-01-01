@@ -33,3 +33,4 @@ python -m model.nn_train_single.py --starti=9
 python -m model.nn_train_single.py --starti=10
 
 python -m modules.fnn_train
+python -m modules.fnn_quiz

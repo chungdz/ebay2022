@@ -8,11 +8,11 @@ class FNNData(Dataset):
         self.tm = test_mode
         if test_mode:
             x_test = pd.read_csv(train_data_path, sep='\t')
-            self.x = torch.FloatTensor(x_test.drop(['record_number'], axis=1).values)
+            self.x = torch.FloatTensor(x_test.values)
         else:
             x_train = pd.read_csv(train_data_path, sep='\t')
-            self.x = torch.FloatTensor(x_train.drop(['record_number', 'target'], axis=1).values)
-            self.y = torch.FloatTensor(x_train.target.values).unsqueeze(-1)
+            self.x = torch.FloatTensor(x_train.drop(['target'], axis=1).values)
+            self.y = torch.LongTensor(x_train.target.values).unsqueeze(-1)
 
     def __getitem__(self, index):
         if self.tm:

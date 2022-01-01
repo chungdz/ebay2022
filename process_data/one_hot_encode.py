@@ -8,6 +8,18 @@ quiz_set = pd.read_csv('data/parsed_quiz.tsv', sep='\t')
 quiz_set['target'] = 0
 train_quiz = pd.concat([train_set, quiz_set], axis=0)
 
+train_quiz['shipping_fee'] = (train_quiz['shipping_fee'] - train_quiz['shipping_fee'].mean()) / train_quiz['shipping_fee'].std()
+train_quiz['carrier_min_estimate'] = (train_quiz['carrier_min_estimate'] - train_quiz['carrier_min_estimate'].mean()) / train_quiz['carrier_min_estimate'].std()
+train_quiz['carrier_max_estimate'] = (train_quiz['carrier_max_estimate'] - train_quiz['carrier_max_estimate'].mean()) / train_quiz['carrier_max_estimate'].std()
+train_quiz['item_price'] = (train_quiz['item_price'] - train_quiz['item_price'].mean()) / train_quiz['item_price'].std()
+train_quiz['quantity'] = (train_quiz['quantity'] - train_quiz['quantity'].mean()) / train_quiz['quantity'].std()
+train_quiz['weight'] = (train_quiz['weight'] - train_quiz['weight'].mean()) / train_quiz['weight'].std()
+train_quiz['tz_dis'] = (train_quiz['tz_dis'] - train_quiz['tz_dis'].mean()) / train_quiz['tz_dis'].std()
+train_quiz['dis'] = (train_quiz['dis'] - train_quiz['dis'].mean()) / train_quiz['dis'].std()
+train_quiz['acc_hour'] = (train_quiz['acc_hour'] - train_quiz['acc_hour'].mean()) / train_quiz['acc_hour'].std()
+train_quiz['pay_hour'] = (train_quiz['pay_hour'] - train_quiz['pay_hour'].mean()) / train_quiz['pay_hour'].std()
+train_quiz['acc_date'] = (train_quiz['acc_date'] - train_quiz['acc_date'].mean()) / train_quiz['acc_date'].std()
+
 c1 = pd.get_dummies(train_quiz.shipment_method_id, prefix='sm')
 c2 = pd.get_dummies(train_quiz.category_id, prefix='ci')
 c3 = pd.get_dummies(train_quiz.package_size, prefix='ps')
