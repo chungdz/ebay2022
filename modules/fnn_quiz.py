@@ -20,7 +20,7 @@ def test(cfg, model, valid_data_loader):
         preds = []
         for data in tqdm(valid_data_loader, total=len(valid_data_loader), desc='test'):
             # 1. Forward
-            pred = model(data)
+            pred = model(data[:-1])
             pred = pred / (torch.sum(pred, dim=1, keepdim=True))
             pred = pred * torch.arange(pred.size(1)).unsqueeze(0)
             pred = torch.sum(pred, dim=1)
@@ -62,8 +62,16 @@ for i in range(1, args.folds + 1):
     print(model.load_state_dict(pretrained_model, strict=False))
     res = test(args, model, test_dl)
     final_day = final_day + w[i - 1] * res
-    
+
 real_quiz_set = pd.read_csv('data/quiz.tsv', sep='\t')
+    
+to_save = []
+for rnumber, predict_value in zip(real_quiz_set['record_number'].values, final_day):
+    to_save.append([rnumber, predict_value])
+savedf = pd.DataFrame(to_save, columns=['record_number', 'pFNN_predict'])
+savedf.to_csv('data/sldata/pfnn_quiz.tsv', sep='\t', index=None) 
+
+
 real_quiz_set['target'] = pd.Series(np.round(final_day))
 res_set = real_quiz_set[['record_number', 'acceptance_scan_timestamp', 'target']]
 res_set['arrive_date'] = res_set.apply(add_func, axis=1)

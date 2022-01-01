@@ -4,6 +4,7 @@ import json
 import pandas as pd
 from tqdm import trange
 import argparse
+import gc
 
 class EbayMetric(object):
     def get_final_error(self, error, weight):
@@ -103,6 +104,9 @@ for i in trange(args.starti, folds + 1):
             loss_and_output.append(float(curl.split()[-1]))
             print(float(curl.split()[-1]))
             break
+    
+    del train_set, valid_set, x_train, x_valid, y_train, y_valid, train_pool, test_pool
+    gc.collect()
 
 lao = np.array([1 / x for x in loss_and_output])
 lao = lao / lao.sum()

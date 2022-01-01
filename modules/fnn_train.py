@@ -2,6 +2,7 @@ import enum
 import numpy as np
 import json
 import pandas as pd
+from torch._C import R
 from tqdm import trange
 import argparse
 from modules.fnn import FNN
@@ -42,14 +43,16 @@ def run(cfg, train_dataset, valid_dataset, fp):
     for epoch in range(cfg.epoch):
         # print(model.match_prediction_layer.state_dict()['2.bias'])
         train(cfg, epoch, model, train_data_loader, optimizer, steps_one_epoch)
-        eval_return = validate(cfg, model, valid_data_loader)
+        eval_return, rc, preds = validate(cfg, model, valid_data_loader)
         print(epoch, eval_return)
         
         if min_ebay == -1 or eval_return < min_ebay:
             min_ebay = eval_return
+            min_rc = rc
+            min_pred = preds
             torch.save(model.state_dict(), fp)
         
-    return min_ebay
+    return min_ebay, min_rc, min_pred
 
 
 def train(cfg, epoch, model, loader, optimizer, steps_one_epoch):
@@ -63,8 +66,8 @@ def train(cfg, epoch, model, loader, optimizer, steps_one_epoch):
             break
         
         # 1. Forward
-        pred = model(data[:, :-1]).squeeze()
-        loss = F.cross_entropy(pred, data[:, -1].long())
+        pred = model(data[:, :-2]).squeeze()
+        loss = F.cross_entropy(pred, data[:, -2].long())
 
         # 3.Backward.
         loss.backward()
@@ -87,11 +90,10 @@ def validate(cfg, model, valid_data_loader):
     model.eval()  
         
     with torch.no_grad():
-        preds, truths = list(), list()
+        preds, truths, rks = list(), list(), list()
         for data in valid_data_loader:
             # 1. Forward
-            pred = model(data[:, :-1])
-            pred = torch.softmax(pred, dim=1)
+            pred = model(data[:, :-2])
             pred = pred / (torch.sum(pred, dim=1, keepdim=True))
             pred = torch.sum(pred, dim=1)
             if pred.dim() > 1:
@@ -100,13 +102,14 @@ def validate(cfg, model, valid_data_loader):
                 preds += pred.numpy().tolist()
             except:
                 preds.append(int(pred.cpu().numpy()))
-            truths += data[:, -1].numpy().tolist()
+            truths += data[:, -2].numpy().flatten().tolist()
+            rks += data[:, -1].numpy().flatten().tolist()
 
-        preds = np.round(preds)
-        residual = (truths - preds).astype("int")
+        rpreds = np.round(preds)
+        residual = (truths - rpreds).astype("int")
         loss = np.where(residual < 0, residual * -0.6, residual * 0.4)
 
-        return np.mean(loss)
+        return np.mean(loss), rks, preds
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--folds", default=10, type=int)
@@ -118,14 +121,24 @@ parser.add_argument("--show_batch", default=1000, type=int)
 args = parser.parse_args()
 
 loss_and_output = []
+total_rc = []
+total_preds = []
 for i in range(1, args.folds + 1):
     print('model:', i)
     train_dataset = FNNData('data/subtrain_cat/train_{}.tsv'.format(i))
     valid_dataset = FNNData('data/subtrain_cat/valid_{}.tsv'.format(i))
-    cur_loss = run(args, train_dataset, valid_dataset, os.path.join(args.save_path, 'pfnn_{}'.format(i)))
+    cur_loss, rc, preds = run(args, train_dataset, valid_dataset, os.path.join(args.save_path, 'pfnn_{}'.format(i)))
     loss_and_output.append(cur_loss)
+    total_rc += rc
+    total_preds += preds
     del train_dataset, valid_dataset
     gc.collect()
+
+to_save = []
+for rnumber, predict_value in zip(total_rc, total_preds):
+    to_save.append([rnumber, predict_value])
+savedf = pd.DataFrame(to_save, columns=['record_number', 'pFNN_predict'])
+savedf.to_csv('data/sldata/pfnn_train.tsv', sep='\t', index=None) 
 
 lao = np.array([1 / x for x in loss_and_output])
 lao = lao / lao.sum()
