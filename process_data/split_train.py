@@ -1,6 +1,7 @@
 import pandas as pd
 from tqdm import trange
 import argparse
+import gc
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--target", default='parsed_train.tsv', type=str)
@@ -30,3 +31,6 @@ for i in trange(1, folds + 1):
     cur_train.to_csv('data/{}/train_{}.tsv'.format(args.filename, i), index=None, sep='\t')
     cur_valid.to_csv('data/{}/valid_{}.tsv'.format(args.filename, i), index=None, sep='\t')
     print(start_index, end_index, cur_train.shape, cur_valid.shape)
+
+    del cur_train, cur_valid
+    gc.collect()

@@ -69,7 +69,7 @@ to_save = []
 for rnumber, predict_value in zip(real_quiz_set['record_number'].values, final_day):
     to_save.append([rnumber, predict_value])
 savedf = pd.DataFrame(to_save, columns=['record_number', 'pFNN_predict'])
-savedf.to_csv('data/sldata/pfnn_quiz.tsv', sep='\t', index=None) 
+savedf.to_csv('data/sl_data/pfnn_quiz.tsv', sep='\t', index=None) 
 
 
 real_quiz_set['target'] = pd.Series(np.round(final_day))

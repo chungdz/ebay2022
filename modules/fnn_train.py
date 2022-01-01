@@ -138,7 +138,7 @@ to_save = []
 for rnumber, predict_value in zip(total_rc, total_preds):
     to_save.append([rnumber, predict_value])
 savedf = pd.DataFrame(to_save, columns=['record_number', 'pFNN_predict'])
-savedf.to_csv('data/sldata/pfnn_train.tsv', sep='\t', index=None) 
+savedf.to_csv('data/sl_data/pfnn_train.tsv', sep='\t', index=None) 
 
 lao = np.array([1 / x for x in loss_and_output])
 lao = lao / lao.sum()
