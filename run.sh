@@ -36,3 +36,6 @@ python -m modules.fnn_train
 python -m modules.fnn_quiz
 
 python -m process_data.split_train --target=sl_data/parsed_train.tsv --filename=sl_data/subtrain
+
+python -m modules.l2_regre_train
+python -m modules.l2_regre_quiz

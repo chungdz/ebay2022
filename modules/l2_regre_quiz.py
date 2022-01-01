@@ -40,16 +40,16 @@ def add_func(row):
 parser = argparse.ArgumentParser()
 parser.add_argument("--folds", default=10, type=int)
 parser.add_argument("--save_path", default='para', type=str)
-parser.add_argument("--batch_size", default=64, type=int)
+parser.add_argument("--batch_size", default=1024, type=int)
 args = parser.parse_args()
 
 test_dataset = FNNData('data/sl_data/parsed_quiz.tsv', test_mode=True)
 model = L2Regre(test_dataset.__feature_len__())
-w = json.load(open('para/l2regre_weight.json', 'r'))
+w = json.load(open('para/l2Regre_weight.json', 'r'))
 final_day = np.zeros((test_dataset.__len__()))
 for i in range(1, args.folds + 1):
     test_dl = DataLoader(test_dataset, shuffle=False, batch_size=args.batch_size)
-    saved_model_path = os.path.join(args.save_path, 'l2regre_{}'.format(i))
+    saved_model_path = os.path.join(args.save_path, 'l2Regre_{}'.format(i))
     # saved_model_path = os.path.join(args.save_path, 'fnn_tmp')
     if not os.path.exists(saved_model_path):
         print("Not Exist: {}".format(saved_model_path))
