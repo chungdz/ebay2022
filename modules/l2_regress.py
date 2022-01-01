@@ -32,5 +32,5 @@ class L2Regre(nn.Module):
         
     def forward(self, data):
         x = self.h1(data)
-        x = self.h2(data)
+        x = self.h2(x)
         return x
