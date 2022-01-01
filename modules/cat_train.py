@@ -109,7 +109,7 @@ for i in trange(args.starti, folds + 1):
     
     preds = model.predict(test_pool)
     total_preds += preds.flatten().tolist()
-    total_rc += valid_set.record_number.values
+    total_rc += valid_set.record_number.values.tolist()
     del train_set, valid_set, x_train, x_valid, y_train, y_valid, train_pool, test_pool
     gc.collect()
 
