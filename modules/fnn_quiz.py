@@ -46,9 +46,11 @@ parser.add_argument("--folds", default=10, type=int)
 parser.add_argument("--save_path", default='para', type=str)
 parser.add_argument("--batch_size", default=64, type=int)
 args = parser.parse_args()
+cate_info = json.load(open('data/category_info.json'))
+args.cate_info = cate_info
 
 test_dataset = FNNData('data/parsed_quiz_cat.tsv', test_mode=True)
-model = FNN(test_dataset.__feature_len__())
+model = FNN(test_dataset.__feature_len__(), args.cate_info)
 w = json.load(open('para/pfnn_weight.json', 'r'))
 final_day = np.zeros((test_dataset.__len__()))
 for i in range(1, args.folds + 1):

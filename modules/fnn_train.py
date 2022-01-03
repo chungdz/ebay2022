@@ -29,7 +29,7 @@ def run(cfg, train_dataset, valid_dataset, fp):
     valid_data_loader = DataLoader(valid_dataset, batch_size=cfg.batch_size, shuffle=False)
 
     # Build model.
-    model = FNN(train_dataset.__feature_len__())
+    model = FNN(train_dataset.__feature_len__(), cfg.cate_info)
     # Build optimizer.
     steps_one_epoch = len(train_data_loader)
     train_steps = cfg.epoch * steps_one_epoch
@@ -118,6 +118,8 @@ parser.add_argument("--lr", default=0.001, type=int)
 parser.add_argument("--save_path", default='para', type=str)
 parser.add_argument("--show_batch", default=1000, type=int)
 args = parser.parse_args()
+cate_info = json.load(open('data/category_info.json'))
+args.cate_info = cate_info
 
 loss_and_output = []
 total_rc = []
