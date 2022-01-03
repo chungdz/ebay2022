@@ -45,7 +45,7 @@ class FNN(nn.Module):
         ss = self.si_emb[data[:, -2].unsqueeze(-1).long()]
         rs = self.si_emb[data[:, -1].unsqueeze(-1).long()]
 
-        x = torch.cat([data, smi, ci, ps, ss, rs], dim=1)
+        x = torch.cat([data[:, :-5], smi, ci, ps, ss, rs], dim=1)
 
         x = self.h1(x)
         x = self.h2(x)

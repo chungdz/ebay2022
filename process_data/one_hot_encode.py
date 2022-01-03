@@ -27,7 +27,7 @@ train_quiz['seller_size'] = (train_quiz['seller_size'] - train_quiz['seller_size
 to_embed = {'shipment_method_id': train_quiz['shipment_method_id'].max() + 1, 
             'category_id': train_quiz['category_id'].max() + 1, 
             'package_size': train_quiz['package_size'].max() + 1, 
-            'state_info': max(train_quiz['sender_state'].max(), train_quiz['receive_state'].max()) + 1}
+            'state_info': int(max(train_quiz['sender_state'].max(), train_quiz['receive_state'].max()) + 1)}
 
 # c1 = pd.get_dummies(train_quiz.shipment_method_id, prefix='sm')
 # c2 = pd.get_dummies(train_quiz.category_id, prefix='ci')

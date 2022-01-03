@@ -140,7 +140,7 @@ parsed['sender_state'] = dis_attr[4]
 parsed['receive_state'] = dis_attr[5]
 
 parsed['acc_hour'] = fattr[0]
-parsed['isNextDay'] = parsed['acc_hour'] >= 14
+parsed['isNextDay'] = (parsed['acc_hour'] >= 14).astype(int)
 parsed['pay_hour'] = fattr[3]
 parsed['acc_date'] = fattr[4]
 parsed['isHoliday'] = fattr[5]
