@@ -190,6 +190,8 @@ for k, v in cleaned_zipcode.items():
         state_dict[v['state']] = state_index
         v['state_idx'] = state_index
         state_index += 1
+    else:
+        v['state_idx'] = state_dict[v['state']]
 
 json.dump(cleaned_zipcode, open('data/zipcode_dict.json', 'w'))
 
