@@ -180,5 +180,16 @@ for k, v in cleaned_zipcode.items():
             all_tz.add(v['tz'])
 print('US Code with no timezone:', len(unseened_data2), 'all time zone:', all_tz)
 
+state_dict = {}
+state_index = 1
+
+for k, v in cleaned_zipcode.items():
+    if str(v['state']) == 'nan':
+        v['state'] = False
+    if v['state'] not in state_dict:
+        state_dict[v['state']] = state_index
+        v['state_idx'] = state_index
+        state_index += 1
+
 json.dump(cleaned_zipcode, open('data/zipcode_dict.json', 'w'))
 
