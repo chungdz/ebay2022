@@ -8,7 +8,7 @@ class FNNData(Dataset):
         self.tm = test_mode
         self.to_drop_list = ['shipment_method_id', 'category_id', 'package_size', 'sender_state', 'receive_state']
         df = pd.read_csv(data_path, sep='\t')
-
+        
         if test_mode:
             self.x = torch.FloatTensor(df.drop(['record_number'] + self.to_drop_list, axis=1).values)
         else:
