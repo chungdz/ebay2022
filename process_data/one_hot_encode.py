@@ -19,6 +19,8 @@ train_quiz['dis'] = (train_quiz['dis'] - train_quiz['dis'].mean()) / train_quiz[
 train_quiz['acc_hour'] = (train_quiz['acc_hour'] - train_quiz['acc_hour'].mean()) / train_quiz['acc_hour'].std()
 train_quiz['pay_hour'] = (train_quiz['pay_hour'] - train_quiz['pay_hour'].mean()) / train_quiz['pay_hour'].std()
 train_quiz['acc_date'] = (train_quiz['acc_date'] - train_quiz['acc_date'].mean()) / train_quiz['acc_date'].std()
+train_quiz['shipping_units'] = (train_quiz['shipping_units'] - train_quiz['shipping_units'].mean()) / train_quiz['shipping_units'].std()
+train_quiz['declared_handling_days'] = (train_quiz['declared_handling_days'] - train_quiz['declared_handling_days'].mean()) / train_quiz['declared_handling_days'].std()
 
 c1 = pd.get_dummies(train_quiz.shipment_method_id, prefix='sm')
 c2 = pd.get_dummies(train_quiz.category_id, prefix='ci')
@@ -28,7 +30,7 @@ c5 = pd.get_dummies(train_quiz.cross_state, prefix='cs')
 c6 = pd.get_dummies(train_quiz.sender_state, prefix='ss')
 c7 = pd.get_dummies(train_quiz.receive_state, prefix='rs')
 train_quiz = pd.concat([train_quiz.drop(['shipment_method_id', 'category_id', 'package_size', 'cross_city', 'cross_state', 'sender_state', 'receive_state'], axis=1), 
-               c1, c2, c3, c4, c5], axis=1)
+               c1, c2, c3, c4, c5, c6, c7], axis=1)
 
 train_quiz[:train_set.shape[0]].to_csv('data/parsed_train_cat.tsv', index=None, sep='\t')
 train_quiz[train_set.shape[0]:].drop(['target'], axis=1).to_csv('data/parsed_quiz_cat.tsv', index=None, sep='\t')
