@@ -21,7 +21,7 @@ python -m model.xgb_quiz
 python -m model.LightGBM_train
 python -m model.LightGBM_quiz
 
-python -m model.cat_train --depth=12 --num_rounds=1000 --esr=3 --border_count=254, --random_strength=1, --l2_leaf=3
+python -m model.cat_train --depth=12 --num_rounds=1000 --esr=5 --border_count=254, --random_strength=1, --l2_leaf=3
 python -m model.cat_quiz
 
 python -m model.nn_train_single.py --starti=4
