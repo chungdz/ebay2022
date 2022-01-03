@@ -82,8 +82,8 @@ def cal_dis(row):
             cross_state = 1
     else:
         cross_state = -1
-    
-    return tz_dis, dis, cross_city, cross_state
+
+    return tz_dis, dis, cross_city, cross_state, sender_info['state_idx'], re_info['state_idx']
 
 dict1 = {
     'B2C': 0,
@@ -108,6 +108,7 @@ dict3 = {
 print('load data')
 raw = pd.read_csv('data/train.tsv', sep='\t')
 zip_info = json.load(open('data/zipcode_dict.json', 'r'))
+
 parsed = raw[['record_number', 'shipment_method_id', 'shipping_fee', 
 'carrier_min_estimate', 'carrier_max_estimate', 'category_id', 
 'item_price', 'quantity']]
@@ -126,6 +127,8 @@ parsed['tz_dis'] = dis_attr[0]
 parsed['dis'] = dis_attr[1]
 parsed['cross_city'] = dis_attr[2]
 parsed['cross_state'] = dis_attr[3]
+parsed['sender_state'] = dis_attr[4]
+parsed['receive_state'] = dis_attr[5]
 
 parsed['acc_hour'] = fattr[1]
 parsed['pay_hour'] = fattr[4]
