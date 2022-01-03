@@ -15,11 +15,14 @@ def add_func(row):
 quiz_set = pd.read_csv('data/parsed_quiz.tsv', sep='\t')
 quiz_set['cross_city'] = quiz_set['cross_city'].astype('int')
 quiz_set['cross_state'] = quiz_set['cross_state'].astype('int')
+quiz_set['sender_state'] = quiz_set['sender_state'].astype('int')
+quiz_set['receive_state'] = quiz_set['receive_state'].astype('int')
 
 to_drop = json.load(open('config/to_drop.json', 'r'))
 quiz_set.drop(['record_number'] + to_drop, axis=1, inplace=True)
 cat_index = []
-cat_set = set({"shipment_method_id", "category_id", "bt", "package_size", "cross_city", "cross_state"})
+cat_set = set({"shipment_method_id", "category_id", "bt", "package_size", "cross_city", 
+"cross_state", "sender_state", "receive_state", "isNextDay", "isHoliday"})
 for idx, cn in enumerate(quiz_set.columns):
     if cn in cat_set:
         cat_index.append(idx)

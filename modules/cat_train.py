@@ -49,7 +49,8 @@ args = parser.parse_args()
 
 to_drop = json.load(open('config/to_drop.json', 'r'))
 print("columns to drop", to_drop)
-cat_set = set({"shipment_method_id", "category_id", "bt", "package_size", "cross_city", "cross_state"})
+cat_set = set({"shipment_method_id", "category_id", "bt", "package_size", "cross_city", 
+"cross_state", "sender_state", "receive_state", "isNextDay", "isHoliday"})
 
 loss_and_output = []
 all_log = []
@@ -60,9 +61,15 @@ for i in trange(args.starti, folds + 1):
     train_set = pd.read_csv('data/subtrain/train_{}.tsv'.format(i), sep='\t')
     train_set['cross_city'] = train_set['cross_city'].astype('int')
     train_set['cross_state'] = train_set['cross_state'].astype('int')
+    train_set['sender_state'] = train_set['sender_state'].astype('int')
+    train_set['receive_state'] = train_set['receive_state'].astype('int')
+
     valid_set = pd.read_csv('data/subtrain/valid_{}.tsv'.format(i), sep='\t')
     valid_set['cross_city'] = valid_set['cross_city'].astype('int')
     valid_set['cross_state'] = valid_set['cross_state'].astype('int')
+    valid_set['sender_state'] = valid_set['sender_state'].astype('int')
+    valid_set['receive_state'] = valid_set['receive_state'].astype('int')
+    
 
     x_train = train_set.drop(['record_number', 'target'] + to_drop, axis=1)
     y_train = train_set.target
