@@ -11,7 +11,8 @@ def add_func(row):
     cdate = cdate + timedelta(days=dd)
     return cdate.strftime("%Y-%m-%d")
 
-cat_feats = ['shipment_method_id','category_id', 'bt', 'package_size', 'cross_city', 'cross_state']
+cat_feats = ['shipment_method_id','category_id', 'bt', 'package_size', 'cross_city', 'cross_state','sender_state', 'receive_state',
+                 'isNextDay','isHoliday']
 
 quiz_set = pd.read_csv('data/parsed_quiz.tsv', sep='\t').drop(['record_number'],axis=1)
 real_quiz_set = pd.read_csv('data/quiz.tsv', sep='\t')
