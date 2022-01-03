@@ -21,7 +21,7 @@ python -m model.xgb_quiz
 python -m model.LightGBM_train
 python -m model.LightGBM_quiz
 
-python -m model.cat_train --depth=12 --num_rounds=1000 --esr=5 --border_count=254, --random_strength=1, --l2_leaf=3
+python -m model.cat_train
 python -m model.cat_quiz
 
 python -m model.nn_train_single.py --starti=4
@@ -39,3 +39,10 @@ python -m process_data.split_train --target=sl_data/parsed_train.tsv --filename=
 
 python -m modules.l2_regre_train
 python -m modules.l2_regre_quiz
+
+
+python -m process_data.split_train
+python -m process_data.one_hot_encode
+python -m process_data.split_train --target=parsed_train_cat.tsv --filename=subtrain_cat
+python -m model.cat_train
+python -m model.cat_quiz
