@@ -39,11 +39,11 @@ class FNN(nn.Module):
         )
         
     def forward(self, data):
-        smi = self.smi_emb[data[:, -5].unsqueeze(-1).long()]
-        ci = self.ci_emb[data[:, -4].unsqueeze(-1).long()]
-        ps = self.ps_emb[data[:, -3].unsqueeze(-1).long()]
-        ss = self.si_emb[data[:, -2].unsqueeze(-1).long()]
-        rs = self.si_emb[data[:, -1].unsqueeze(-1).long()]
+        smi = self.smi_emb(data[:, -5].unsqueeze(-1).long())
+        ci = self.ci_emb(data[:, -4].unsqueeze(-1).long())
+        ps = self.ps_emb(data[:, -3].unsqueeze(-1).long())
+        ss = self.si_emb(data[:, -2].unsqueeze(-1).long())
+        rs = self.si_emb(data[:, -1].unsqueeze(-1).long())
 
         x = torch.cat([data[:, :-5], smi, ci, ps, ss, rs], dim=1)
 
