@@ -22,6 +22,7 @@ train_quiz['pay_hour'] = (train_quiz['pay_hour'] - train_quiz['pay_hour'].mean()
 train_quiz['acc_date'] = (train_quiz['acc_date'] - train_quiz['acc_date'].mean()) / train_quiz['acc_date'].std()
 train_quiz['shipping_units'] = (train_quiz['shipping_units'] - train_quiz['shipping_units'].mean()) / train_quiz['shipping_units'].std()
 train_quiz['declared_handling_days'] = (train_quiz['declared_handling_days'] - train_quiz['declared_handling_days'].mean()) / train_quiz['declared_handling_days'].std()
+train_quiz['seller_size'] = (train_quiz['seller_size'] - train_quiz['seller_size'].mean()) / train_quiz['seller_size'].std()
 
 to_embed = {'shipment_method_id': train_quiz['shipment_method_id'].max(), 
             'category_id': train_quiz['category_id'].max(), 
