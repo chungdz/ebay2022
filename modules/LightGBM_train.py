@@ -40,7 +40,8 @@ for i in range(1, folds + 1):
     x_valid = valid_set.drop(['record_number', 'target'],axis=1)
     y_valid = valid_set.target
     
-    cat_feats = ['shipment_method_id','category_id', 'bt', 'package_size', 'cross_city', 'cross_state']
+    cat_feats = ['shipment_method_id','category_id', 'bt', 'package_size', 'cross_city', 'cross_state','sender_state', 'receive_state',
+                 'isNextDay','isHoliday']
     lgb_train = lgb.Dataset(x_train, y_train, categorical_feature=cat_feats, params={"max_bin": 1000})
     lgb_eval = lgb.Dataset(x_valid, y_valid, categorical_feature=cat_feats, reference=lgb_train)
     
