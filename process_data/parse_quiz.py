@@ -43,8 +43,13 @@ def add_func(row):
     payd = row['payment_datetime']
     arr2 = payd.split()
     phour = int(arr2[1][:2])
+    acc_date = int(cdate.strftime("%Y%m%d"))
+    if str(acc_date)[:-4] >= '1124':
+        isHoliday = 1
+    else:
+        isHoliday = 0
         
-    return acc_hour, tz, isdst, phour, int(cdate.strftime("%Y%m%d"))
+    return acc_hour, tz, isdst, phour, acc_date, isHoliday
 
 def cal_dis(row):
     sender_tz = row['sender_tz']
@@ -108,7 +113,7 @@ zip_info = json.load(open('data/zipcode_dict.json', 'r'))
 
 parsed = raw[['record_number', 'shipment_method_id', 'shipping_fee', 
 'carrier_min_estimate', 'carrier_max_estimate', 'category_id', 
-'item_price', 'quantity']]
+'item_price', 'quantity', 'declared_handling_days']]
 
 print('parsing data')
 fattr = raw.progress_apply(add_func, axis=1, result_type='expand')
@@ -116,9 +121,16 @@ raw['sender_tz'] = fattr[1]
 raw['isdst'] = fattr[2]
 dis_attr = raw.progress_apply(cal_dis, axis=1, result_type='expand')
 
+svc = raw['seller_id'].value_counts()
+seller_dict = {}
+for sid, scounts in zip(svc.index.values, svc.values):
+    seller_dict[sid] = scounts
+parsed['seller_size'] = raw['seller_id'].map(seller_dict)
+
 parsed['bt'] = raw['b2c_c2c'].map(dict1)
 parsed['package_size'] = raw['package_size'].map(dict2)
 parsed['weight'] = raw['weight_units'].map(dict3) * raw['weight']
+parsed['shipping_units'] = parsed['shipping_fee'] / parsed['weight']
 
 parsed['tz_dis'] = dis_attr[0]
 parsed['dis'] = dis_attr[1]
@@ -128,8 +140,10 @@ parsed['sender_state'] = dis_attr[4]
 parsed['receive_state'] = dis_attr[5]
 
 parsed['acc_hour'] = fattr[0]
+parsed['isNextDay'] = parsed['acc_hour'] >= 14
 parsed['pay_hour'] = fattr[3]
 parsed['acc_date'] = fattr[4]
+parsed['isHoliday'] = fattr[5]
 
 print('shape:', parsed.shape)
 parsed.to_csv('data/parsed_quiz.tsv', index=None, sep='\t')
