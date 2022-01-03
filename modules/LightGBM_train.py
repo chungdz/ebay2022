@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 
 folds = 10
-num_rounds = 130
+num_rounds = 60
 esr = 3
 
 def custom_asymmetric_eval(preds, train_data):
