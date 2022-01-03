@@ -24,10 +24,10 @@ train_quiz['shipping_units'] = (train_quiz['shipping_units'] - train_quiz['shipp
 train_quiz['declared_handling_days'] = (train_quiz['declared_handling_days'] - train_quiz['declared_handling_days'].mean()) / train_quiz['declared_handling_days'].std()
 train_quiz['seller_size'] = (train_quiz['seller_size'] - train_quiz['seller_size'].mean()) / train_quiz['seller_size'].std()
 
-to_embed = {'shipment_method_id': train_quiz['shipment_method_id'].max(), 
-            'category_id': train_quiz['category_id'].max(), 
-            'package_size': train_quiz['package_size'].max(), 
-            'state_info': max(train_quiz['sender_state'].max(), train_quiz['receive_state'].max())}
+to_embed = {'shipment_method_id': train_quiz['shipment_method_id'].max() + 1, 
+            'category_id': train_quiz['category_id'].max() + 1, 
+            'package_size': train_quiz['package_size'].max() + 1, 
+            'state_info': max(train_quiz['sender_state'].max(), train_quiz['receive_state'].max()) + 1}
 
 # c1 = pd.get_dummies(train_quiz.shipment_method_id, prefix='sm')
 # c2 = pd.get_dummies(train_quiz.category_id, prefix='ci')
