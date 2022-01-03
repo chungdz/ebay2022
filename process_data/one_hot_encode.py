@@ -26,7 +26,7 @@ train_quiz['declared_handling_days'] = (train_quiz['declared_handling_days'] - t
 to_embed = {'shipment_method_id': train_quiz['shipment_method_id'].max(), 
             'category_id': train_quiz['category_id'].max(), 
             'package_size': train_quiz['package_size'].max(), 
-            'state_info': (train_quiz['sender_state'].max(), train_quiz['receive_state'].max())}
+            'state_info': max(train_quiz['sender_state'].max(), train_quiz['receive_state'].max())}
 
 # c1 = pd.get_dummies(train_quiz.shipment_method_id, prefix='sm')
 # c2 = pd.get_dummies(train_quiz.category_id, prefix='ci')

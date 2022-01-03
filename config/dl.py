@@ -6,15 +6,18 @@ import pandas as pd
 class FNNData(Dataset):
     def __init__(self, train_data_path, test_mode=False):
         self.tm = test_mode
+        to_drop_list = ['shipment_method_id', 'category_id', 'package_size', 'sender_state', 'receive_state']
+
         if test_mode:
-            x_test = pd.read_csv(train_data_path, sep='\t')
-            self.x = torch.FloatTensor(x_test.drop(['record_number'], axis=1).values)
-            self.record_number = torch.FloatTensor(x_test.record_number.values).unsqueeze(-1)
+            df = pd.read_csv(train_data_path, sep='\t')
+            self.x = torch.FloatTensor(df.drop(['record_number'] + to_drop_list, axis=1).values)
         else:
-            x_train = pd.read_csv(train_data_path, sep='\t')
-            self.x = torch.FloatTensor(x_train.drop(['target', 'record_number'], axis=1).values)
-            self.y = torch.LongTensor(x_train.target.values).unsqueeze(-1)
-            self.record_number = torch.FloatTensor(x_train.record_number.values).unsqueeze(-1)
+            df = pd.read_csv(train_data_path, sep='\t')
+            self.x = torch.FloatTensor(df.drop(['target', 'record_number'] + to_drop_list, axis=1).values)
+            self.y = torch.LongTensor(df.target.values).unsqueeze(-1)
+        
+        self.record_number = torch.FloatTensor(df.record_number.values).unsqueeze(-1)
+        self.x2 = torch.LongTensor(df[to_drop_list].values)
 
     def __getitem__(self, index):
         if self.tm:
