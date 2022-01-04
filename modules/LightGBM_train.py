@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 
 folds = 10
-num_rounds = 130
+num_rounds = 60
 esr = 3
 
 def custom_asymmetric_eval(preds, train_data):
@@ -24,9 +24,10 @@ params = {
     'num_leaves': 31,
     'learning_rate': 0.05,
     'feature_fraction': 0.9,
-    'bagging_fraction': 0.8,
+    'bagging_fraction': 0.6,
     'bagging_freq': 5,
-    'verbose': 0
+    'verbose': 0,
+    'lambda_l2': 0.001
 }
 
 loss_and_output = []
@@ -40,8 +41,9 @@ for i in range(1, folds + 1):
     x_valid = valid_set.drop(['record_number', 'target'],axis=1)
     y_valid = valid_set.target
     
-    cat_feats = ['shipment_method_id','category_id', 'bt', 'package_size', 'cross_city', 'cross_state']
-    lgb_train = lgb.Dataset(x_train, y_train, categorical_feature=cat_feats, params={"max_bin": 1000})
+    cat_feats = ['shipment_method_id','category_id', 'bt', 'package_size', 'cross_city', 'cross_state','sender_state', 'receive_state',
+                 'isNextDay','isHoliday']
+    lgb_train = lgb.Dataset(x_train, y_train, categorical_feature=cat_feats)
     lgb_eval = lgb.Dataset(x_valid, y_valid, categorical_feature=cat_feats, reference=lgb_train)
     
     results = {}
