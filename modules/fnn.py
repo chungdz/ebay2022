@@ -13,7 +13,7 @@ class FNN(nn.Module):
         self.si_emb = nn.Embedding(cfg['state_info'], 30)
 
         self.h1 = nn.Sequential(
-            nn.Linear(flayer + 135, 256),
+            nn.Linear(flayer, 256),
             nn.ReLU(),
             nn.Dropout(0.2)
         )
