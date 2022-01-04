@@ -6,7 +6,7 @@ import argparse
 from modules.l2_regress import L2Regre
 from utils.train_util import set_seed
 from torch.utils.data import DataLoader
-from config.dl import FNNData
+from config.dl import FNNDataL2
 import torch
 import os
 from tqdm import tqdm
@@ -43,7 +43,7 @@ parser.add_argument("--save_path", default='para', type=str)
 parser.add_argument("--batch_size", default=1024, type=int)
 args = parser.parse_args()
 
-test_dataset = FNNData('data/sl_data/parsed_quiz.tsv', test_mode=True)
+test_dataset = FNNDataL2('data/sl_data/parsed_quiz.tsv', test_mode=True)
 model = L2Regre(test_dataset.__feature_len__())
 w = json.load(open('para/l2Regre_weight.json', 'r'))
 final_day = np.zeros((test_dataset.__len__()))

@@ -6,7 +6,7 @@ import argparse
 from modules.l2_regress import L2Regre
 from utils.train_util import set_seed
 from torch.utils.data import DataLoader
-from config.dl import FNNData
+from config.dl import FNNDataL2
 import torch
 import os
 from tqdm import tqdm
@@ -121,8 +121,8 @@ total_rc = []
 total_preds = []
 for i in range(1, args.folds + 1):
     print('model:', i)
-    train_dataset = FNNData('data/sl_data/subtrain/train_{}.tsv'.format(i))
-    valid_dataset = FNNData('data/sl_data/subtrain/valid_{}.tsv'.format(i))
+    train_dataset = FNNDataL2('data/sl_data/subtrain/train_{}.tsv'.format(i))
+    valid_dataset = FNNDataL2('data/sl_data/subtrain/valid_{}.tsv'.format(i))
     cur_loss, rc, preds = run(args, train_dataset, valid_dataset, os.path.join(args.save_path, 'l2Regre_{}'.format(i)))
     loss_and_output.append(cur_loss)
     total_rc += rc
