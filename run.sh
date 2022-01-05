@@ -14,7 +14,6 @@ python -m process_data.parse_quiz
 python -m process_data.one_hot_encode
 python -m process_data.split_train --target parsed_train_cat.tsv --filename=subtrain_cat
 
-
 python -m model.xgb_train
 python -m model.xgb_quiz
 
@@ -34,3 +33,9 @@ python -m model.nn_train_single.py --starti=10
 
 python -m modules.fnn_train
 python -m modules.fnn_quiz
+
+python -m process_data.create_l2_data
+python -m process_data.split_train --target sl_data/parsed_train.tsv --filename=sl_data/subtrain
+
+python -m modules.l2_regre_train
+python -m modules.l2_regre_quiz

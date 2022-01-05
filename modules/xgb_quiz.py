@@ -11,7 +11,7 @@ def add_func(row):
     cdate = cdate + timedelta(days=dd)
     return cdate.strftime("%Y-%m-%d")
 
-quiz_set = pd.read_csv('data/parsed_quiz.tsv', sep='\t').drop(['record_number'],axis=1)
+quiz_set = pd.read_csv('data/parsed_quiz.tsv', sep='\t').drop(['record_number', 'shipping_units', 'declared_handling_days'],axis=1)
 real_quiz_set = pd.read_csv('data/quiz.tsv', sep='\t')
 dtest = xgb.DMatrix(quiz_set)
 folds = 10

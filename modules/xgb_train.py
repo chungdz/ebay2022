@@ -38,9 +38,9 @@ for i in range(1, folds + 1):
     train_set = pd.read_csv('data/subtrain/train_{}.tsv'.format(i), sep='\t')
     valid_set = pd.read_csv('data/subtrain/valid_{}.tsv'.format(i), sep='\t')
 
-    x_train = train_set.drop(['record_number', 'target'],axis=1)
+    x_train = train_set.drop(['record_number', 'target', 'shipping_units', 'declared_handling_days'],axis=1)
     y_train = train_set.target
-    x_valid = valid_set.drop(['record_number', 'target'],axis=1)
+    x_valid = valid_set.drop(['record_number', 'target', 'shipping_units', 'declared_handling_days'],axis=1)
     y_valid = valid_set.target
 
     dtrain = xgb.DMatrix(x_train, y_train)
