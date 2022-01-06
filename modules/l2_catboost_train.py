@@ -80,7 +80,7 @@ for i in trange(args.starti, folds + 1):
                           eval_metric=EbayMetric())
     
     model.fit(train_pool, early_stopping_rounds=args.esr, eval_set=test_pool, use_best_model=True, log_cout=open('result/output.txt', 'w'))
-    model.save_model('para/catboost_{}.cbm'.format(i))
+    model.save_model('para/l2_catboost_{}.cbm'.format(i))
     logstr = open('result/output.txt', 'r').readlines()
     all_log.append(logstr)
     print(logstr)
