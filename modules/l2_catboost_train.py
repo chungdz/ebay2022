@@ -53,7 +53,7 @@ total_preds = []
 for i in trange(args.starti, folds + 1):
     print('model:', i)
     train_set = pd.read_csv('data/sl_data/subtrain/train_{}.tsv'.format(i), sep='\t')
-    valid_set = pd.read_csv('data/subtrain/valid_{}.tsv'.format(i), sep='\t')
+    valid_set = pd.read_csv('data/sl_data/subtrain/valid_{}.tsv'.format(i), sep='\t')
     
     x_train = train_set.drop(['record_number', 'target'], axis=1)
     y_train = train_set.target
