@@ -44,12 +44,17 @@ def add_func(row):
     arr2 = payd.split()
     phour = int(arr2[1][:2])
     acc_date = int(cdate.strftime("%Y%m%d"))
-    if str(acc_date)[:-4] >= '1124':
+    if str(acc_date)[-4:] >= '1124':
         isHoliday = 1
     else:
         isHoliday = 0
+
+    if acc_date >= 20200319:
+        isCovid = 1
+    else:
+        isCovid = 0
         
-    return acc_hour, tz, isdst, phour, acc_date, isHoliday
+    return acc_hour, tz, isdst, phour, acc_date, isHoliday, isCovid
 
 def cal_dis(row):
     sender_tz = row['sender_tz']
@@ -144,6 +149,7 @@ parsed['isNextDay'] = (parsed['acc_hour'] >= 14).astype(int)
 parsed['pay_hour'] = fattr[3]
 parsed['acc_date'] = fattr[4]
 parsed['isHoliday'] = fattr[5]
+parsed['isCovid'] = fattr[6]
 
 print('shape:', parsed.shape)
 parsed.to_csv('data/parsed_quiz.tsv', index=None, sep='\t')
