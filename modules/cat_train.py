@@ -59,12 +59,14 @@ total_preds = []
 for i in trange(args.starti, folds + 1):
     print('model:', i)
     train_set = pd.read_csv('data/subtrain/train_{}.tsv'.format(i), sep='\t')
+    train_set = train_set[train_set['acc_date'] > 20190601]
     train_set['cross_city'] = train_set['cross_city'].astype('int')
     train_set['cross_state'] = train_set['cross_state'].astype('int')
     train_set['sender_state'] = train_set['sender_state'].astype('int')
     train_set['receive_state'] = train_set['receive_state'].astype('int')
 
     valid_set = pd.read_csv('data/subtrain/valid_{}.tsv'.format(i), sep='\t')
+    valid_set = valid_set[valid_set['acc_date'] > 20190601]
     valid_set['cross_city'] = valid_set['cross_city'].astype('int')
     valid_set['cross_state'] = valid_set['cross_state'].astype('int')
     valid_set['sender_state'] = valid_set['sender_state'].astype('int')
@@ -102,7 +104,7 @@ for i in trange(args.starti, folds + 1):
                           eval_metric=EbayMetric())
     
     model.fit(train_pool, early_stopping_rounds=args.esr, eval_set=test_pool, use_best_model=True, log_cout=open('result/output.txt', 'w'))
-    model.save_model('para/catboost_{}.cbm'.format(i))
+    model.save_model('para/catboost_20190601_{}.cbm'.format(i))
     logstr = open('result/output.txt', 'r').readlines()
     all_log.append(logstr)
     print(logstr)
@@ -120,15 +122,15 @@ for i in trange(args.starti, folds + 1):
     del train_set, valid_set, x_train, x_valid, y_train, y_valid, train_pool, test_pool
     gc.collect()
 
-to_save = []
-for rnumber, predict_value in zip(total_rc, total_preds):
-    to_save.append([rnumber, predict_value])
-savedf = pd.DataFrame(to_save, columns=['record_number', 'catboost_predict'])
-savedf.to_csv('data/sl_data/catboost_train.tsv', sep='\t', index=None) 
+# to_save = []
+# for rnumber, predict_value in zip(total_rc, total_preds):
+#     to_save.append([rnumber, predict_value])
+# savedf = pd.DataFrame(to_save, columns=['record_number', 'catboost_predict'])
+# savedf.to_csv('data/sl_data/catboost_train.tsv', sep='\t', index=None)
 
 lao = np.array([1 / x for x in loss_and_output])
 lao = lao / lao.sum()
 
-json.dump(list(lao), open('para/catboost_weight.json', 'w'))
-json.dump(loss_and_output, open('para/all_log.json', 'w'))
+json.dump(list(lao), open('para/catboost_weight_20190601.json', 'w'))
+json.dump(loss_and_output, open('para/all_log_20190601.json', 'w'))
 print('mean loss:', np.mean(loss_and_output))
