@@ -49,8 +49,8 @@ args = parser.parse_args()
 
 to_drop = json.load(open('config/to_drop.json', 'r'))
 print("columns to drop", to_drop)
-#cat_set = set({"shipment_method_id", "category_id", "bt", "package_size", "cross_city",
-#"cross_state", "sender_state", "receive_state", "isNextDay", "isHoliday"})
+cat_set = set({"shipment_method_id", "category_id", "bt", "package_size", "cross_city",
+"cross_state", "sender_state", "receive_state", "isNextDay", "isHoliday"})
 
 loss_and_output = []
 all_log = []
@@ -59,37 +59,42 @@ total_preds = []
 for i in trange(args.starti, folds + 1):
     print('model:', i)
     train_set = pd.read_csv('data/subtrain/train_{}.tsv'.format(i), sep='\t')
-    # train_set['cross_city'] = train_set['cross_city'].astype('int')
-    # train_set['cross_state'] = train_set['cross_state'].astype('int')
-    # train_set['sender_state'] = train_set['sender_state'].astype('int')
-    # train_set['receive_state'] = train_set['receive_state'].astype('int')
+    train_set['cross_city'] = train_set['cross_city'].astype('int')
+    train_set['cross_state'] = train_set['cross_state'].astype('int')
+    train_set['sender_state'] = train_set['sender_state'].astype('int')
+    train_set['receive_state'] = train_set['receive_state'].astype('int')
 
     valid_set = pd.read_csv('data/subtrain/valid_{}.tsv'.format(i), sep='\t')
-    # valid_set['cross_city'] = valid_set['cross_city'].astype('int')
-    # valid_set['cross_state'] = valid_set['cross_state'].astype('int')
-    # valid_set['sender_state'] = valid_set['sender_state'].astype('int')
-    # valid_set['receive_state'] = valid_set['receive_state'].astype('int')
+    valid_set['cross_city'] = valid_set['cross_city'].astype('int')
+    valid_set['cross_state'] = valid_set['cross_state'].astype('int')
+    valid_set['sender_state'] = valid_set['sender_state'].astype('int')
+    valid_set['receive_state'] = valid_set['receive_state'].astype('int')
     
 
     #x_train = train_set.drop(['record_number', 'target'] + to_drop, axis=1)
-    x_train = train_set[['carrier_max_estimate', 'carrier_min_estimate', 'acc_date', 'acc_hour', 'declared_handling_days']]
+    x_train = train_set[['shipment_method_id', 'dis', 'sender_state', 'package_size', 'seller_size', 'category_id', 'receive_state',
+             'cross_state', 'shipping_fee', 'item_price', 'weight', 'shipping_units', 'tz_dis', 'bt', 'quantity',
+             'cross_city']]
     y_train = train_set.target
-    x_valid = valid_set[['carrier_max_estimate', 'carrier_min_estimate', 'acc_date', 'acc_hour', 'declared_handling_days']]
+
     #x_valid = valid_set.drop(['record_number', 'target'] + to_drop, axis=1)
+    x_valid = valid_set[['shipment_method_id', 'dis', 'sender_state', 'package_size', 'seller_size', 'category_id', 'receive_state',
+             'cross_state', 'shipping_fee', 'item_price', 'weight', 'shipping_units', 'tz_dis', 'bt', 'quantity',
+             'cross_city']]
     y_valid = valid_set.target
     print(x_train.columns)
-    # cat_index = []
-    # for idx, cn in enumerate(x_train.columns):
-    #     if cn in cat_set:
-    #         cat_index.append(idx)
+    cat_index = []
+    for idx, cn in enumerate(x_train.columns):
+        if cn in cat_set:
+            cat_index.append(idx)
 
     train_pool = Pool(x_train, 
                   y_train, 
-                  #cat_features=cat_index,
+                  cat_features=cat_index,
                   feature_names=list(x_train.columns))
     test_pool = Pool(x_valid,
                  y_valid,
-                 #cat_features=cat_index,
+                 cat_features=cat_index,
                  feature_names=list(x_valid.columns))
 
     model = CatBoostRegressor(iterations=args.num_rounds, 
@@ -103,9 +108,9 @@ for i in trange(args.starti, folds + 1):
                           grow_policy='SymmetricTree',
                           eval_metric=EbayMetric())
     
-    model.fit(train_pool, early_stopping_rounds=args.esr, eval_set=test_pool, use_best_model=True, log_cout=open('result/output_1.txt', 'w'))
-    model.save_model('para/catboost_1_{}.cbm'.format(i))
-    logstr = open('result/output_1.txt', 'r').readlines()
+    model.fit(train_pool, early_stopping_rounds=args.esr, eval_set=test_pool, use_best_model=True, log_cout=open('result/output_2.txt', 'w'))
+    model.save_model('para/catboost_2_{}.cbm'.format(i))
+    logstr = open('result/output_2.txt', 'r').readlines()
     all_log.append(logstr)
     print(logstr)
     llen = len(logstr)
@@ -126,11 +131,11 @@ to_save = []
 for rnumber, predict_value in zip(total_rc, total_preds):
     to_save.append([rnumber, predict_value])
 savedf = pd.DataFrame(to_save, columns=['record_number', 'catboost_predict'])
-savedf.to_csv('data/sl_data/catboost_train_1.tsv', sep='\t', index=None)
+savedf.to_csv('data/sl_data/catboost_train_2.tsv', sep='\t', index=None)
 
 lao = np.array([1 / x for x in loss_and_output])
 lao = lao / lao.sum()
 
-json.dump(list(lao), open('para/catboost_weight_1.json', 'w'))
-json.dump(loss_and_output, open('para/all_log_1.json', 'w'))
+json.dump(list(lao), open('para/catboost_weight_2.json', 'w'))
+json.dump(loss_and_output, open('para/all_log_2.json', 'w'))
 print('mean loss:', np.mean(loss_and_output))
