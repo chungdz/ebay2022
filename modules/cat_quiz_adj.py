@@ -25,7 +25,7 @@ quiz_set_1 = quiz_set[['carrier_max_estimate', 'carrier_min_estimate', 'acc_date
 quiz_set_2 = quiz_set[['shipment_method_id', 'dis', 'sender_state', 'package_size', 'seller_size', 'category_id', 'receive_state', 'cross_state','shipping_fee','item_price','weight','shipping_units','tz_dis','bt','quantity','cross_city']]
 cat_index = []
 cat_set = set({"shipment_method_id", "category_id", "bt", "package_size",
-"cross_state", "sender_state", "receive_state"})
+"cross_state", "sender_state", "receive_state","cross_city"})
 for idx, cn in enumerate(quiz_set_2.columns):
     if cn in cat_set:
         cat_index.append(idx)
